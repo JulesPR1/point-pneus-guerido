@@ -53,8 +53,19 @@ puts "Nettoyage…"
 admin_email    = ENV.fetch("ADMIN_EMAIL", "admin@point-pneus-guerido.com")
 admin_password = ENV.fetch("ADMIN_PASSWORD", "changez-ce-mot-de-passe")
 
+# Les deux valeurs viennent de l'environnement : on vérifie avant d'insérer, sinon
+# l'échec remonte sous la forme d'un ActiveRecord::RecordInvalid difficile à lire.
+unless admin_email.match?(URI::MailTo::EMAIL_REGEXP)
+  abort "ADMIN_EMAIL invalide : #{admin_email.inspect} n'est pas une adresse e-mail."
+end
+
+if admin_password.length < 12
+  abort "ADMIN_PASSWORD trop court : #{admin_password.length} caractères, 12 minimum."
+end
+
 admin = AdminUser.find_or_initialize_by(email_address: admin_email)
-admin.update!(name: "Administrateur", password: admin_password, password_confirmation: admin_password)
+admin.assign_attributes(name: "Administrateur", password: admin_password, password_confirmation: admin_password)
+abort "Compte administrateur refusé : #{admin.errors.full_messages.to_sentence}" unless admin.save
 puts "Administrateur : #{admin.email_address}"
 
 # ---------------------------------------------------------------------------

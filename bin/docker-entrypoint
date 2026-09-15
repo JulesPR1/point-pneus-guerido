@@ -2,7 +2,10 @@
 
 # Prépare la base avant de démarrer Puma (voir docs/DEPLOIEMENT-DEMO.md).
 if [ "${1}" == "./bin/rails" ] || [ "${1}" == "bin/rails" ]; then
-  ./bin/rails db:prepare
+  # db:create + db:migrate plutôt que db:prepare : db:prepare rejoue le seed
+  # lui-même sur une base neuve, ce qui le ferait tourner deux fois ici.
+  ./bin/rails db:create 2>/dev/null || true
+  ./bin/rails db:migrate
 
   # Démo : reconstruit tout le contenu à chaque démarrage.
   # ATTENTION : db:seed commence par un destroy_all — toute saisie faite

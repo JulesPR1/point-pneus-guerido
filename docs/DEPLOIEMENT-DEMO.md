@@ -18,7 +18,7 @@ Il n'y a rien à copier-coller depuis ce document — seulement des étapes à s
 | Fichier | Rôle |
 |---|---|
 | `Dockerfile` | Image multi-étages `ruby:4.0.5-slim` → gems, `libvips`, précompilation des assets, utilisateur non-root |
-| `bin/docker-entrypoint` | Lance `db:prepare`, puis `db:seed` si `SEED_ON_BOOT=1`, avant Puma |
+| `bin/docker-entrypoint` | Lance `db:create` + `db:migrate`, puis `db:seed` si `SEED_ON_BOOT=1`, avant Puma |
 | `.dockerignore` | Exclut `.git`, `docs`, `test`, les logs… et **`config/master.key`** |
 | `render.yaml` | Blueprint Render : service web Docker, plan `free`, région Frankfurt, health check `/up` |
 | `config/database.yml` | Bloc `production` conditionnel : SQLite si `DEMO_SQLITE=1`, **MySQL inchangé sinon** |
@@ -29,7 +29,7 @@ Il n'y a rien à copier-coller depuis ce document — seulement des étapes à s
 Rien de tout cela ne modifie le comportement MySQL habituel : sans `DEMO_SQLITE=1`,
 l'application se connecte à MySQL exactement comme avant.
 
-Validé localement le 15/09/2026 : build Docker OK, boot + seed en 6 s, 15 pages / 54 sections /
+Validé localement (build Docker + exécution) le 15/09/2026 : build Docker OK, boot + seed en 6 s, 15 pages / 54 sections /
 113 éléments / 9 médias, variantes libvips générées (JPEG 174 ko), 188 Mo de RAM en veille
 (limite Render free : 512 Mo), `bin/rails test` 144 runs / 0 failure.
 
@@ -43,8 +43,11 @@ Validé localement le 15/09/2026 : build Docker OK, boot + seed en 6 s, 15 pages
 
   ```bash
   openssl rand -hex 64     # → SECRET_KEY_BASE
-  openssl rand -base64 24  # → ADMIN_PASSWORD (ou votre propre mot de passe long)
+  openssl rand -base64 24  # → ADMIN_PASSWORD
   ```
+
+  `ADMIN_PASSWORD` doit faire **au moins 12 caractères** et `ADMIN_EMAIL` être une adresse
+  valide : le seed s'arrête avec un message explicite sinon.
 
 ---
 
@@ -55,7 +58,8 @@ Validé localement le 15/09/2026 : build Docker OK, boot + seed en 6 s, 15 pages
 1. Pousser la branche contenant `render.yaml` (par défaut : `main`).
 2. Render → **New → Blueprint** → sélectionner le dépôt → **Apply**.
 3. Render lit `render.yaml` et demande les deux variables marquées `sync: false` :
-   `ADMIN_EMAIL` et `ADMIN_PASSWORD`. `SECRET_KEY_BASE` est généré automatiquement.
+   `ADMIN_EMAIL` (adresse valide) et `ADMIN_PASSWORD` (12 caractères minimum).
+   `SECRET_KEY_BASE` est généré automatiquement.
 4. Le build démarre. 5 à 10 min la première fois.
 
 ### Option B — Service créé à la main
@@ -80,7 +84,7 @@ Validé localement le 15/09/2026 : build Docker OK, boot + seed en 6 s, 15 pages
    | `DEMO_SQLITE` | `1` | ✅ |
    | `SEED_ON_BOOT` | `1` | ✅ (premier déploiement) |
    | `ADMIN_EMAIL` | l'identifiant remis au garage | ✅ |
-   | `ADMIN_PASSWORD` | mot de passe long | ✅ |
+   | `ADMIN_PASSWORD` | mot de passe de **12 caractères minimum** | ✅ |
    | `RAILS_MAX_THREADS` | `3` | recommandé |
    | `WEB_CONCURRENCY` | `1` | recommandé (512 Mo de RAM) |
    | `RAILS_LOG_LEVEL` | `info` | facultatif |
@@ -177,6 +181,8 @@ Sans ces deux étapes, laisser `SEED_ON_BOOT=1` et prévenir le garage que la d�
 | Build échoue sur `bundle install` | `Gemfile.lock` non committé après ajout de `sqlite3` | `bundle lock` puis committer le lock |
 | `Missing encryption key to decrypt file with` | Ni `SECRET_KEY_BASE` ni `RAILS_MASTER_KEY` | Définir `SECRET_KEY_BASE` |
 | `ActiveRecord::NoDatabaseError` / connexion MySQL refusée au boot | `DEMO_SQLITE` absent ou ≠ `1` | Ajouter `DEMO_SQLITE=1` et redéployer |
+| `ADMIN_PASSWORD trop court` / `ADMIN_EMAIL invalide` au démarrage | Variables refusées par le seed | Corriger la variable dans Render (12 caractères minimum, adresse valide) et redéployer |
+| Site en ligne mais vide (aucune page) | `SEED_ON_BOOT` ≠ `1` sur une base neuve | Sur le plan Free, garder `SEED_ON_BOOT=1` : le disque est éphémère |
 | Déploiement « unhealthy » | Health check mal réglé | `Health Check Path` = `/up` |
 | Images cassées après un redéploiement | Disque éphémère + `SEED_ON_BOOT=0` | Repasser `SEED_ON_BOOT=1` et redémarrer, ou §7 |
 | Le service redémarre en boucle, logs tronqués | Dépassement des 512 Mo | `WEB_CONCURRENCY=1`, `RAILS_MAX_THREADS=3` |

@@ -39,6 +39,12 @@ fr:
       inclusion: "n'est pas une valeur autorisée"
       exclusion: "n'est pas disponible"
   activerecord:
+    errors:
+      messages:
+        record_invalid: "La validation a échoué : %{errors}"
+        restrict_dependent_destroy:
+          has_one: "Impossible de supprimer l'enregistrement car un %{record} dépendant existe"
+          has_many: "Impossible de supprimer l'enregistrement car des %{record} dépendants existent"
     attributes:
       page:
         title: "Le titre"
