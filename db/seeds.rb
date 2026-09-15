@@ -60,8 +60,44 @@ puts "Administrateur : #{admin.email_address}"
 # ---------------------------------------------------------------------------
 # Réglages du site
 # ---------------------------------------------------------------------------
+
+# Mentions légales : un seul texte, dans les réglages du site, ouvert depuis le
+# pied de page. Il n'est repris sur aucune page — ni sur contact, ni sous les
+# formulaires de devis, où le pavé Bloctel faisait doublon.
+LEGAL = <<~TXT.strip
+  ## Éditeur du site
+
+  Le site https://www.point-pneus-guerido.com est édité par la société Point Pneus Guerido, SARL au capital de 7 622,45 €, située 9 rue Henri Becquerel, 66330 Cabestany, enregistrée au R.C.S. de Perpignan sous le numéro 450 045 430, TVA FR92450045430.
+
+  La directrice de la publication est FRANCO Marilyne, gérante de l'entreprise. Vous pouvez nous contacter par mail à l'adresse [pointpneusguerido@free.fr](mailto:pointpneusguerido@free.fr) ou par téléphone au 04 68 50 50 68.
+
+  ## Hébergement du site
+
+  Le prestataire des services d'hébergement du site est la société OVH SAS, située au 2 rue Kellermann, 59100 Roubaix.
+
+  ## Liste d'opposition Bloctel
+
+  Tout consommateur ne souhaitant pas faire l'objet de prospection commerciale par voie téléphonique peut s'inscrire gratuitement sur la liste d'opposition au démarchage prévue par l'article L. 223-1 du Code de la consommation. L'inscription peut être effectuée :
+
+  - directement sur le site Bloctel : [bloctel.gouv.fr](https://www.bloctel.gouv.fr/)
+  - par courrier postal à l'adresse Société Worldline – Service Worldline, River Ouest 80, Quai Voltaire, 95870 Bezons, France.
+
+  Les consommateurs inscrits sur Bloctel ne pourront faire l'objet d'un démarchage téléphonique par Point Pneus Guerido. L'inscription sur la liste est prise en compte dans un délai maximum de 30 jours à compter de la confirmation reçue par courriel. À compter de cette confirmation, la durée de protection du numéro de téléphone est de 3 ans.
+
+  ## Médiateur de la consommation — Mobilians
+
+  Le médiateur du Conseil national des professions de l'automobile (CNPA) peut vous aider à régler à l'amiable un litige qui vous oppose à un adhérent du CNPA-MOBILIANS.
+
+  Les consommateurs doivent transmettre leurs demandes de médiation :
+
+  - par courrier postal, à l'adresse : M. le Médiateur de Mobilians, 43 bis route de Vaugirard – CS 80016 – 92197 Meudon Cedex
+  - par courriel à l'adresse [mediateur@mediateur-mobilians.fr](mailto:mediateur@mediateur-mobilians.fr)
+  - sur son site internet : [mediateur-mobilians.fr](https://www.mediateur-mobilians.fr)
+TXT
+
 setting = SiteSetting.instance
 setting.update!(
+  legal_notice: LEGAL,
   company_name: "Point Pneus Guerido",
   tagline: "Le spécialiste en pneu neuf et occasion, à Cabestany, près de Perpignan.",
   phone: "04 68 50 50 68",
@@ -72,10 +108,13 @@ setting.update!(
   opening_hours: "Lundi – vendredi|8h – 12h / 14h – 18h30\nSamedi|Fermé",
   map_embed_url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3547.453001162379!2d2.92118127654596!3d42.68968091421273!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12b06f9347bbd4d5%3A0xd679f73cea3277e6!2sPoint%20Pneus%20Guerido!5e1!3m2!1sfr!2sfr!4v1788613203957!5m2!1sfr!2sfr",
   map_link_url: "https://www.google.com/maps/dir/?api=1&destination=Point+Pneus+Guerido%2C+9+rue+Henri+Becquerel%2C+66330+Cabestany",
-  # Carte affichée directement, sans bouton. L'iframe ci-dessus est une carte
-  # Google : elle dépose des cookies dès le chargement de la page, donc en
-  # théorie après consentement. Repasser à false, ou remplacer l'URL par
-  # l'export OpenStreetMap, pour revenir à un affichage au clic.
+  # Carte affichée directement, sans bouton : demande du client.
+  #
+  # L'iframe ci-dessus est une carte Google, qui dépose ses cookies dès le
+  # chargement de la page — il faut donc un bandeau de consentement pour être
+  # conforme. Deux façons de s'en passer : repasser ce réglage à false, ce qui
+  # réactive l'affichage au clic (map_controller.js), ou remplacer map_embed_url
+  # par un export OpenStreetMap, qui ne trace personne.
   map_autoload: true,
   default_seo_title: "Point Pneus Guerido",
   default_meta_description: "Vente et montage de pneus neufs et d'occasion, mécanique générale, géométrie 3D, climatisation et rénovation de phares à Cabestany, près de Perpignan."
@@ -85,19 +124,6 @@ attach(setting, :logo, "logo.png")
 setting.default_og_image.purge if setting.default_og_image.attached?
 attach(setting, :default_og_image, "hero-atelier.jpg")
 
-BLOCTEL = <<~TXT.strip
-  Tout consommateur ne souhaitant pas faire l'objet de prospection commerciale par voie téléphonique
-  peut s'inscrire gratuitement sur la liste d'opposition au démarchage prévue par l'article L. 223-1
-  du Code de la consommation. L'inscription peut être effectuée :
-
-  - directement sur le site Bloctel : [bloctel.gouv.fr](https://www.bloctel.gouv.fr/)
-  - par courrier postal à l'adresse Société Worldline – Service Worldline, River Ouest 80, Quai Voltaire, 95870 Bezons, France.
-
-  Les consommateurs inscrits sur Bloctel ne pourront faire l'objet d'un démarchage téléphonique par
-  Point Pneus Guerido. L'inscription sur la liste est prise en compte dans un délai maximum de 30 jours
-  à compter de la confirmation reçue par courriel. À compter de cette confirmation, la durée de
-  protection du numéro de téléphone est de 3 ans.
-TXT
 
 # ---------------------------------------------------------------------------
 # Accueil
@@ -113,8 +139,8 @@ build_page(
     [ :hero, {
       eyebrow: "Cabestany · Pyrénées-Orientales",
       heading: "Pneus, mécanique et *géométrie 3D*",
-      subheading: "Le spécialiste en pneu neuf et occasion, à deux pas de Perpignan.",
-      body: "Pneus pour toutes marques de véhicules, neufs et occasions. Service de montage, équilibrage et parallélisme, entretien et réparation de voitures de toutes marques.",
+      subheading: "Le spécialiste en pneu neuf et occasion. 9 rue Henri Becquerel, à Cabestany (66).",
+      body: "Pneus toutes marques, neufs et occasions : l'équilibrage, les valves et le montage sont compris dans le prix annoncé. Au même atelier, mécanique générale, géométrie 3D, recharge de climatisation et rénovation de phares.",
       image: "hero-atelier.jpg",
       items: [
         { title: "Devis pneus gratuit", link_url: "/devis-pneus-perpignan", value: "principal" },
@@ -123,98 +149,85 @@ build_page(
     } ],
 
     [ :service_grid, {
-      eyebrow: "Nos services",
-      heading: "Tout se fait sur place",
-      subheading: "Pneus, géométrie, mécanique : tout est fait dans le même atelier, par la même équipe. Vous déposez la voiture, vous n'avez pas à courir d'un garage à l'autre.",
+      heading: "Ce que nous faisons, et à quel prix",
       settings: { columns: "3" },
       items: [
-        { title: "Centre de montage", icon: "disc-3", body: "Dans notre prix sont inclus l'équilibrage, les valves et le montage.", link_url: "/pneus-neuf-reparation", link_label: "Vente de pneus" },
-        { title: "Parallélisme / équilibrage", icon: "axis-3d", body: "Contrôle et réglage de la géométrie de votre véhicule.", link_url: "/geometrie-3d", link_label: "Géométrie 3D" },
-        { title: "Mécanique générale", icon: "wrench", body: "Freinage, échappement, suspension, embrayage, vidange, batterie, pompe à eau.", link_url: "/mecanique-garage-automobile", link_label: "Nos prestations" },
-        { title: "Rénovation phares", icon: "lamp", body: "70 % moins cher que le remplacement d'un optique neuf.", link_url: "/renovation-phares", link_label: "En savoir plus" },
-        { title: "Pose de plaque d'immatriculation", icon: "rectangle-horizontal", body: "Réalisée directement à l'atelier." },
-        { title: "Recharge climatisation", icon: "thermometer-snowflake", body: "Forfait Clim à partir de 65 € (R134).", link_url: "/climatisation", link_label: "Voir les forfaits" }
+        { title: "Centre de montage", icon: "disc-3", body: "Pneus neufs et occasions, tourisme, 4x4 et camionnette. Équilibrage, valves et montage compris dans le prix.", link_url: "/pneus-neuf-reparation", link_label: "Voir la vente de pneus" },
+        { title: "Réparation de pneus", icon: "wrench", body: "Vulcanisation à chaud 30 € (tourisme), réparation par mèche 15 €. Occasion contrôlée à partir de 11,00 €.", link_url: "/pneus-doccasion", link_label: "Voir les réparations et les occasions" },
+        { title: "Parallélisme / géométrie 3D", icon: "axis-3d", body: "Parallélisme avant 65 €. Avant + arrière et carrossage 85 €, 100 € en 4x4 ou camionnette.", link_url: "/geometrie-3d", link_label: "Voir les tarifs de géométrie" },
+        { title: "Mécanique générale", icon: "cog", body: "Freinage, échappement, suspension, embrayage, distribution, vidange, cardans, pompe à eau.", link_url: "/mecanique-garage-automobile", link_label: "Voir les prestations mécaniques" },
+        { title: "Recharge climatisation", icon: "thermometer-snowflake", body: "Forfait Clim R134 65 €, forfait R1234Y 130 €. Recharge conseillée tous les 2 ans.", link_url: "/climatisation", link_label: "Voir les forfaits climatisation" },
+        { title: "Rénovation de phares", icon: "lamp", body: "Pour les optiques en polycarbonate ternis par les UV, qui ne passent plus au contrôle technique.", link_url: "/renovation-phares", link_label: "Voir la rénovation de phares" }
       ]
     } ],
 
     [ :text_image, {
-      eyebrow: "Pneumatiques",
       heading: "Pneus : vente et montage",
-      body: "Pneus pour toutes marques de véhicules, neufs et occasions. Tous nos pneus d'occasion ont une faible usure, entre 0 et 15 %, ils sont testés par une entreprise agréée et ils sont garantis.\n\nService de montage, équilibrage et parallélisme.",
+      body: "Pneus pour toutes marques de véhicules, neufs et occasions. Les pneus d'occasion sont classés en trois catégories selon leur usure et leur marque, et vendus contrôlés.\n\nMontage, équilibrage et parallélisme sont faits sur place.",
       image: "pneus-neufs.jpg",
       settings: { image_side: "right" },
       items: [
         { title: "Tourisme, 4x4 et camionnette" },
         { title: "Pneus été, hiver et toute saison" },
-        { title: "Équilibrage, valves et montage inclus" }
+        { title: "Équilibrage, valves et montage compris dans le prix" }
       ]
     } ],
 
     [ :text_image, {
-      eyebrow: "Atelier",
       heading: "Mécanique générale",
       body: "Entretien et réparation de voitures de toutes marques : freinage, échappement, suspension, embrayage, vidange, prise en charge du contrôle technique, batterie, pompe à eau, équilibrage et parallélisme.",
       image: "mecanique.jpg",
       settings: { image_side: "left" },
       items: [
         { title: "Prise en charge du contrôle technique" },
-        { title: "Pièces de rechange de qualité" }
+        { title: "Pose de plaque d'immatriculation" },
+        { title: "Garantie pièces et main d'œuvre" }
       ]
     } ],
 
     [ :checklist, {
-      eyebrow: "Nos engagements",
-      heading: "Ce sur quoi vous pouvez compter",
+      heading: "Nos engagements",
       settings: { tone: "dark" },
       items: [
-        { title: "Service rapide et de qualité", body: "Le travail est fait à l'atelier, par l'équipe qui vous a reçu." },
+        { title: "Service rapide et de qualité" },
         { title: "Point Pneus aligne ses prix", body: "Neuf ou occasion, l'équilibrage, les valves et le montage sont compris dans le prix annoncé." },
-        { title: "Recyclage des pneus usagés", body: "Les pneus que vous déposez repartent dans la filière de recyclage." },
-        { title: "Service professionnel", body: "Toutes marques, du montage de pneus à la prise en charge du contrôle technique." }
+        { title: "Recyclage des pneus usagés" },
+        { title: "Service professionnel", body: "Véhicules de toutes marques, du montage de pneus à la prise en charge du contrôle technique." }
       ]
     } ],
 
     [ :brands, {
-      eyebrow: "Qui sommes-nous ?",
-      heading: "Un large choix, toutes les grandes marques",
-      body: "Point Pneus Guerido, le spécialiste de la vente de pneus neufs et d'occasions pas chers, vous invite à profiter d'un large choix de pneus : tourisme, 4x4, camionnette, neige, de jantes, d'accessoires.\n\nProfitez de nos promotions pour votre achat de pneu.",
+      heading: "Les marques que nous montons",
+      body: "Pneus de tourisme, 4x4, camionnette et neige, jantes et accessoires. La disponibilité varie selon la dimension : demandez-nous la vôtre.",
       items: [
-        [ "Nexen", "nexen" ], [ "Pirelli", "pirelli" ], [ "Hankook", "hankook" ], [ "Kleber", "kleber" ],
-        [ "Michelin", "michelin" ], [ "Goodyear", "goodyear" ], [ "BFGoodrich", "bfgoodrich" ],
-        [ "Firestone", "firestone" ], [ "Falken", "falken" ], [ "Cheyen", "cheyen" ], [ "Valeo", "valeo" ]
-      ].map { |name, file| { title: name, image: "marques/#{file}.png" } }
-    } ],
-
-    [ :service_grid, {
-      eyebrow: "Pourquoi nous choisir ?",
-      heading: "Trois bonnes raisons",
-      settings: { columns: "3", tone: "paper" },
-      items: [
-        { title: "Un large assortiment", icon: "layers", body: "Chez Point Pneus Guerido, vous disposez d'un large assortiment de pneus, et de conseils professionnels pour vous aider à faire le meilleur choix." },
-        { title: "Des pièces de qualité", icon: "cog", body: "Nous utilisons des pièces de rechange de qualité, produites par les meilleurs fabricants." },
-        { title: "Garantie totale", icon: "shield-check", body: "Vous bénéficiez d'une garantie totale, pièces et main d'œuvre." }
-      ]
+        "Michelin", "Goodyear", "Pirelli", "Hankook", "Kleber", "BFGoodrich",
+        "Firestone", "Falken", "Nexen", "Cheyen", "Valeo"
+      ].map { |name| { title: name } }
     } ],
 
     [ :cards, {
-      eyebrow: "Le garage",
-      heading: "Venez comme vous êtes",
+      heading: "Voir le garage avant de venir",
       settings: { columns: "3" },
       items: [
-        { title: "L'accueil", body: "Un espace d'attente au comptoir de l'atelier.", link_url: "/galerie-photos", link_label: "Voir la galerie", image: "accueil-boutique.jpg" },
-        { title: "Le stock de pneus", body: "Neufs et occasions, toutes dimensions.", link_url: "/galerie-photos", link_label: "Voir la galerie", image: "atelier-jaune.jpg" },
-        { title: "Les pièces détachées", body: "Moteur, freinage, direction, électricité.", link_url: "/nos-pieces-detachees", link_label: "Nos pièces", image: "comptoir-pieces.jpg" }
+        { title: "L'atelier en photos", body: "Une cinquantaine de photos de l'accueil, de l'atelier, du stock et d'interventions réelles.", link_url: "/galerie-photos", link_label: "Voir les photos du garage", image: "accueil-boutique.jpg" },
+        { title: "Les tarifs de géométrie", body: "Parallélisme avant 65 €, avant + arrière et carrossage 85 €, 100 € en 4x4 ou camionnette.", link_url: "/geometrie-3d", link_label: "Voir les tarifs de géométrie", image: "atelier-jaune.jpg" },
+        { title: "Les pièces détachées", body: "Moteur, freinage, direction-suspension-train et électricité : fournies et posées à l'atelier.", link_url: "/nos-pieces-detachees", link_label: "Voir les familles de pièces", image: "comptoir-pieces.jpg" }
       ]
     } ],
 
-    # Avis Google, recopiés mot pour mot depuis la fiche du garage — tous cinq
-    # étoiles. Ceux que Google tronque derrière « … Plus » ne sont pas repris :
-    # on ne termine pas la phrase d'un client. La note globale et le nombre
-    # total d'avis se saisissent au backoffice, ils ne se lisent pas d'ici.
+    # Avis Google, recopiés mot pour mot depuis la fiche du garage. Ceux que
+    # Google tronque derrière « … Plus » ne sont pas repris : on ne termine pas
+    # la phrase d'un client.
+    #
+    # Ce sont des extraits, et le chapô le dit : seuls les avis cinq étoiles ont
+    # été recopiés, donc la page ne remplace pas la fiche, elle y renvoie. La
+    # note globale et le nombre total d'avis ne sont pas inscrits ici parce
+    # qu'ils changent : ils se saisissent au backoffice, relevés sur la fiche
+    # le jour où on les saisit, ou ils restent vides et rien ne s'affiche.
     [ :google_reviews, {
-      eyebrow: "Avis Google",
-      heading: "Ce que disent nos clients",
-      settings: { tone: "paper", columns: "3", visible: "9",
+      heading: "Avis publiés sur Google",
+      body: "Extraits de notre fiche Google, recopiés tels quels. Nous n'avons repris ici que des avis cinq étoiles : la fiche complète, avec la note moyenne et l'ensemble des avis, se consulte sur Google.",
+      settings: { tone: "paper", columns: "3", visible: "3",
                   profile_url: "https://www.google.com/maps/place/Point+Pneus+Guerido/@42.6896809,2.9211813,815m/data=!3m1!1e3!4m8!3m7!1s0x12b06f9347bbd4d5:0xd679f73cea3277e6!8m2!3d42.689677!4d2.9237562!9m1!1b1!16s%2Fg%2F1tdhw8vr" },
       items: [
         [ "Saby Lopez", "juin 2026",
@@ -276,16 +289,6 @@ build_page(
         [ "Bruno Salvaing", "octobre 2022",
           "Bonjour, un pneu changé en 15 mn, sans rdv, (c'est difficile à gérer une crevaison), 30€, c'est une petite voiture. Impeccable." ]
       ].map { |author, date, body| { title: author, subtitle: date, value: "5", body: body } }
-    } ],
-
-    [ :cta, {
-      heading: "Un devis, c'est gratuit et sans engagement",
-      body: "Décrivez votre besoin en quelques champs, nous revenons vers vous avec un prix.",
-      settings: { tone: "dark" },
-      items: [
-        { title: "Devis pneus", link_url: "/devis-pneus-perpignan", value: "principal" },
-        { title: "Devis mécanique", link_url: "/devis-mecanique", value: "secondaire" }
-      ]
     } ]
   ]
 )
@@ -300,8 +303,7 @@ build_page(
   meta_description: "Pneus neufs et d'occasion de tourisme, 4x4 et camionnette. Équilibrage, valves et montage inclus. Réparation par vulcanisation à chaud ou mèche.",
   sections: [
     [ :hero, {
-      eyebrow: "Pneumatiques",
-      heading: "Vente pneu *neuf* et occasion",
+      heading: "Vente de pneus neufs et d'occasion",
       subheading: "Des prix exceptionnels sur les pneus de tourisme, de 4x4 et de camionnette.",
       body: "Découvrez notre offre de pneus d'occasion à prix discount sur toutes les grandes marques et équipez-vous à petit prix de pneumatiques été et hiver pour votre véhicule. Découvrez aussi toute la gamme de nos pneus neufs.",
       image: "pneus-neufs.jpg",
@@ -314,7 +316,6 @@ build_page(
     } ],
 
     [ :pricing, {
-      eyebrow: "Réparation",
       heading: "Tarifs de réparation",
       settings: { tone: "dark" },
       items: [
@@ -325,8 +326,8 @@ build_page(
     } ],
 
     [ :cta, {
-      heading: "Une dimension précise en tête ?",
-      body: "Indiquez-la dans le formulaire, nous vous répondons avec un prix monté.",
+      heading: "Demander un devis pneus",
+      body: "La dimension se lit sur le flanc du pneu, par exemple 205/55 R16 91 V. Indiquez-la dans le formulaire : nous répondons avec un prix monté, équilibré, valves comprises.",
       settings: { tone: "signal" },
       items: [ { title: "Devis pneus", link_url: "/devis-pneus-perpignan", value: "principal" } ]
     } ]
@@ -340,8 +341,7 @@ build_page(
   meta_description: "Réparations conformes aux procédures des Professionnels du Pneu, marquage REP, et trois catégories de pneus d'occasion contrôlés.",
   sections: [
     [ :hero, {
-      eyebrow: "Pneumatiques",
-      heading: "Réparation et *pneus d'occasion*",
+      heading: "Réparation de pneus et pneus d'occasion",
       subheading: "Réparer plutôt que jeter : c'est économique, et c'est écologique.",
       image: "vulcanisation.jpg"
     } ],
@@ -351,21 +351,20 @@ build_page(
       body: "Les réparations des dommages causés aux pneus font partie des opérations indispensables en terme économique, mais aussi écologique, en réduisant d'autant les déchets.\n\nBien entendu, tous les pneus endommagés ne sont pas réparables. Seuls des spécialistes peuvent juger de la faisabilité de la réparation ; elle sera alors faite selon des procédures bien établies. Ces procédures sont détaillées dans les manuels des fournisseurs de produits de réparation et dans un ouvrage édité par les Professionnels du Pneu.\n\nDepuis le 1er janvier 2008, les réparations par vulcanisation à chaud sont identifiées par un marquage « REP » à la verticale du bouchon de gomme vulcanisé. Les réparations autorisées sur les flancs sont alors plus facilement identifiables."
     } ],
 
-    [ :service_grid, {
-      eyebrow: "Nos réparations",
+    [ :checklist, {
       heading: "Trois catégories de pneus d'occasion",
       body: "Les différents contrôles permettent de proposer à la vente des pneus de :",
-      settings: { columns: "3", tone: "dark" },
+      settings: { tone: "dark" },
       items: [
-        { title: "Catégorie 1", icon: "medal", body: "Faible usure, état neuf, grande marque." },
-        { title: "Catégorie 2", icon: "badge-check", body: "Faible usure, état neuf, autre marque." },
-        { title: "Catégorie 3", icon: "percent", body: "Usure 50 %. À partir de 11,00 €." }
+        { title: "Catégorie 1", body: "Faible usure, état neuf, grande marque." },
+        { title: "Catégorie 2", body: "Faible usure, état neuf, autre marque." },
+        { title: "Catégorie 3", body: "Usure 50 %, à partir de 11,00 €." }
       ]
     } ],
 
     [ :cta, {
-      heading: "Un doute sur l'état de vos pneus ?",
-      body: "Passez à l'atelier, le contrôle visuel est immédiat.",
+      heading: "Faire contrôler vos pneus",
+      body: "Le contrôle visuel se fait à l'atelier, sans rendez-vous. Pour savoir si votre dimension est disponible en occasion, appelez-nous : le stock varie.",
       items: [
         { title: "Nous appeler", link_url: "tel:+33468505068", value: "principal" },
         { title: "Nous écrire", link_url: "/contact", value: "secondaire" }
@@ -384,24 +383,23 @@ entretiens = build_page(
   meta_description: "Mécanique générale, pièces détachées, rénovation de phares et décalaminage moteur dans notre atelier de Cabestany.",
   sections: [
     [ :hero, {
-      eyebrow: "Atelier",
-      heading: "Entretien et *mécanique*",
-      subheading: "Au-delà du pneumatique, tous les services du garage traditionnel.",
+      heading: "Entretien et mécanique",
+      subheading: "Au-delà du pneumatique, les services du garage traditionnel : quatre pages détaillent ce que nous faisons.",
       image: "comptoir-pieces.jpg"
     } ],
     [ :service_grid, {
       heading: "Nos prestations d'entretien",
       settings: { columns: "2" },
       items: [
-        { title: "Mécanique : garage automobile", icon: "wrench", body: "Entretien, vidange, embrayage, distribution, échappement, cardans, freins et suspension.", link_url: "/mecanique-garage-automobile", link_label: "Voir la page" },
-        { title: "Nos pièces détachées", icon: "cog", body: "Moteur, direction-suspension-train, freinage et électricité.", link_url: "/nos-pieces-detachees", link_label: "Voir la page" },
-        { title: "Rénovation phares", icon: "lamp", body: "Redonner sa transparence à un optique en polycarbonate terni.", link_url: "/renovation-phares", link_label: "Voir la page" },
-        { title: "Décalaminage moteur", icon: "spray-can", body: "La solution à l'encrassement moteur, efficace sur les vannes EGR et les FAP.", link_url: "/decalaminage-moteur", link_label: "Voir la page" }
+        { title: "Mécanique : garage automobile", icon: "wrench", body: "Entretien, vidange, embrayage, distribution, échappement, cardans, freins et suspension.", link_url: "/mecanique-garage-automobile", link_label: "Voir les prestations mécaniques" },
+        { title: "Nos pièces détachées", icon: "cog", body: "Moteur, direction-suspension-train, freinage et électricité : le détail des familles de pièces.", link_url: "/nos-pieces-detachees", link_label: "Voir les familles de pièces" },
+        { title: "Rénovation phares", icon: "lamp", body: "Redonner sa transparence à un optique en polycarbonate terni par les UV.", link_url: "/renovation-phares", link_label: "Voir la rénovation de phares" },
+        { title: "Décalaminage moteur", icon: "spray-can", body: "Nettoyage de la calamine, vannes EGR et filtres à particules compris.", link_url: "/decalaminage-moteur", link_label: "Voir le décalaminage" }
       ]
     } ],
     [ :cta, {
-      heading: "Besoin d'un chiffrage ?",
-      body: "Le devis mécanique est gratuit et sans engagement.",
+      heading: "Demander un devis mécanique",
+      body: "Cochez les interventions souhaitées et décrivez le véhicule. Le devis est gratuit et sans engagement.",
       settings: { tone: "dark" },
       items: [ { title: "Devis mécanique", link_url: "/devis-mecanique", value: "principal" } ]
     } ]
@@ -416,8 +414,7 @@ build_page(
   meta_description: "Entretien, vidange, embrayage, distribution, échappement, cardans, freins et suspension : tous les services du garage traditionnel.",
   sections: [
     [ :hero, {
-      eyebrow: "Mécanique",
-      heading: "Les services du garage *traditionnel*",
+      heading: "Les services du garage traditionnel",
       subheading: "En plus de la vente de pneus et de pièces détachées, nous vous proposons tous les services du garage traditionnel.",
       image: "mecanique.jpg"
     } ],
@@ -428,21 +425,19 @@ build_page(
         { title: "Distribution" }, { title: "Échappement" }, { title: "Les cardans" }
       ]
     } ],
-    [ :service_grid, {
-      eyebrow: "Sécurité",
-      heading: "Votre sécurité est primordiale",
-      body: "Parce que votre sécurité est primordiale, nous réalisons les travaux suivants :",
-      settings: { columns: "4", tone: "dark" },
+    [ :checklist, {
+      heading: "Les organes de sécurité que nous prenons en charge",
+      settings: { tone: "dark" },
       items: [
-        { title: "Freins", icon: "disc" },
-        { title: "Suspension", icon: "move-vertical" },
-        { title: "Pneumatiques", icon: "disc-3" },
-        { title: "Rénovation phares", icon: "lamp", link_url: "/renovation-phares", link_label: "En savoir plus" }
+        { title: "Freinage", body: "Disques et tambours, plaquettes et mâchoires, étriers, flexibles, kits de frein." },
+        { title: "Suspension et direction", body: "Amortisseurs, triangles de suspension, rotules de direction, roulements de roue, cardans." },
+        { title: "Pneumatiques", body: "Montage, équilibrage, valves, parallélisme et géométrie." },
+        { title: "Éclairage", body: "Projecteurs, feux arrière, et rénovation des optiques en polycarbonate ternis." }
       ]
     } ],
     [ :cta, {
-      heading: "Un devis mécanique gratuit",
-      body: "Indiquez l'intervention et votre véhicule, nous chiffrons.",
+      heading: "Demander un devis mécanique",
+      body: "Indiquez l'intervention et le véhicule : nous chiffrons les pièces et la main d'œuvre.",
       settings: { tone: "signal" },
       items: [ { title: "Demander un devis", link_url: "/devis-mecanique", value: "principal" } ]
     } ]
@@ -457,8 +452,7 @@ build_page(
   meta_description: "Pièces moteur, direction-suspension-train, freinage et électricité : les familles de pièces détachées que nous fournissons et posons.",
   sections: [
     [ :hero, {
-      eyebrow: "Pièces",
-      heading: "Nos *pièces détachées*",
+      heading: "Nos pièces détachées",
       subheading: "Fournies et posées à l'atelier, avec garantie pièces et main d'œuvre.",
       image: "comptoir-pieces.jpg"
     } ],
@@ -472,8 +466,8 @@ build_page(
       ]
     } ],
     [ :cta, {
-      heading: "Une référence précise à commander ?",
-      body: "Donnez-nous la marque, le modèle et l'immatriculation : nous trouvons la pièce.",
+      heading: "Commander une pièce",
+      body: "Donnez-nous la marque, le modèle et l'immatriculation du véhicule : c'est ce qui permet d'identifier la référence exacte.",
       settings: { tone: "dark" },
       items: [ { title: "Devis mécanique", link_url: "/devis-mecanique", value: "principal" } ]
     } ]
@@ -488,28 +482,22 @@ build_page(
   meta_description: "Les optiques en polycarbonate ternissent et ne passent plus au contrôle technique depuis 2010. La rénovation coûte 70 % de moins qu'un optique neuf.",
   sections: [
     [ :hero, {
-      eyebrow: "Optiques",
-      heading: "Rénovation d'*optiques de phares*",
-      subheading: "N'attendez plus, et faites de réelles économies.",
+      heading: "Rénovation d'optiques de phares",
+      subheading: "Redonner sa transparence à un optique en polycarbonate terni, plutôt que le remplacer.",
       image: "renovation-phares.jpg"
     } ],
     [ :rich_text, {
       heading: "Pourquoi un phare se ternit",
       body: "Depuis quelques années, les optiques de phare sont conçus à partir de polycarbonate, un matériau plastique offrant de meilleures performances que le verre en terme de résistance aux impacts.\n\nCependant, le polycarbonate a tendance à se détériorer rapidement. En effet, nous constatons bien souvent que ces optiques se ternissent, blanchissent ou jaunissent sous l'effet des U.V. et des différentes intempéries en l'espace de deux à trois ans.\n\nD'autre part, les lavages successifs provoquent micro-rayures et opacité."
     } ],
-    [ :stats, {
-      eyebrow: "Ce que cela change",
-      heading: "Les chiffres à retenir",
+    [ :rich_text, {
+      heading: "Ce que cela change",
       settings: { tone: "dark" },
-      items: [
-        { value: "30 à 40 %", title: "de vision nocturne en moins", body: "Le vieillissement du polycarbonate peut réduire la vision nocturne d'autant." },
-        { value: "2010", title: "Contrôle technique", body: "Depuis le 1er janvier 2010, les optiques en polycarbonate ternis par le temps ne passent plus au contrôle technique." },
-        { value: "70 %", title: "moins cher", body: "Que le remplacement d'un optique neuf." }
-      ]
+      body: "Un optique terni diffuse la lumière au lieu de la projeter : selon l'état du polycarbonate, la perte de vision nocturne annoncée va de 30 à 40 %.\n\nDepuis le 1er janvier 2010, l'état des optiques fait partie des points vérifiés au contrôle technique : un phare trop terni entraîne une contre-visite. Nous rénovons l'optique existant. Selon le véhicule et l'état de l'optique, l'opération revient nettement moins cher qu'un optique neuf — de l'ordre de 70 % d'économie sur les modèles courants. Passez à l'atelier : nous vous dirons si l'optique est récupérable, et à quel prix, avant toute intervention."
     } ],
     [ :cta, {
-      heading: "Faites contrôler vos optiques",
-      body: "Un passage rapide à l'atelier suffit pour savoir si la rénovation est possible.",
+      heading: "Faire contrôler vos optiques",
+      body: "Un passage à l'atelier suffit pour savoir si la rénovation est possible.",
       items: [
         { title: "Nous appeler", link_url: "tel:+33468505068", value: "principal" },
         { title: "Nous écrire", link_url: "/contact", value: "secondaire" }
@@ -526,22 +514,17 @@ build_page(
   meta_description: "Plus de 70 % des véhicules souffrent de problèmes dus à la calamine. Le décalaminage DKBOOST nettoie sans agressivité, y compris vannes EGR et FAP.",
   sections: [
     [ :hero, {
-      eyebrow: "Moteur",
-      heading: "Décalaminage *moteur*",
-      subheading: "La solution à l'encrassement moteur."
+      heading: "Décalaminage moteur",
+      subheading: "Nettoyer la calamine déposée dans le moteur, sans le démonter."
     } ],
     [ :rich_text, {
       heading: "Comment cela fonctionne",
-      body: "Le DKBOOST © sublime la calamine, qui passe d'un état solide à un état gazeux, et est évacuée par l'échappement.\n\nIl nettoie la calamine des moteurs à explosion sans agressivité, et est particulièrement efficace sur les vannes EGR et les FAP (filtres à particules).\n\nLa calamine est un résidu charbonneux généré par la combustion des gaz, qui se dépose notamment sur les parois des cylindres des moteurs à explosion, les sièges des soupapes et les pistons."
+      body: "La calamine est un résidu charbonneux généré par la combustion des gaz. Elle se dépose sur les parois des cylindres, les sièges des soupapes et les pistons, et finit par encrasser la vanne EGR et le filtre à particules.\n\nNous utilisons le procédé DKBOOST ©, qui sublime la calamine : elle passe de l'état solide à l'état gazeux et part par l'échappement. Le moteur n'est pas démonté. Le fabricant annonce plus de 70 % des véhicules concernés par des problèmes liés à la calamine ; c'est son chiffre, pas un relevé fait dans notre atelier.\n\nLe décalaminage n'est pas un remède universel : il agit sur l'encrassement, pas sur une pièce défectueuse. Dites-nous le modèle, le kilométrage et les symptômes, nous vous dirons s'il est indiqué."
     } ],
-    [ :stats, {
-      heading: "Un problème très répandu",
-      settings: { tone: "dark" },
-      items: [ { value: "+ de 70 %", title: "des véhicules concernés", body: "Plus de 70 % des véhicules souffrent de problèmes dus à la calamine." } ]
-    } ],
+
     [ :cta, {
-      heading: "Votre moteur manque de souffle ?",
-      body: "Parlons-en : nous vous dirons si le décalaminage est indiqué.",
+      heading: "Savoir si le décalaminage est indiqué",
+      body: "Perte de puissance, fumée, voyant moteur : décrivez-nous les symptômes et le kilométrage.",
       settings: { tone: "signal" },
       items: [ { title: "Nous contacter", link_url: "/contact", value: "principal" } ]
     } ]
@@ -558,16 +541,14 @@ build_page(
   meta_description: "Forfait Clim 65 € (R134) et 130 € (R1234Y) : contrôle de température, tirage du circuit, réinjection de gaz et contrôle du système.",
   sections: [
     [ :hero, {
-      eyebrow: "Confort et sécurité",
-      heading: "Recharge *climatisation*",
-      subheading: "Plus qu'un simple élément de votre confort, la climatisation renforce votre sécurité passive."
+      heading: "Recharge de climatisation",
+      subheading: "Forfait R134 65 €, forfait R1234Y 130 €. Le gaz utilisé dépend de l'année du véhicule."
     } ],
     [ :rich_text, {
       heading: "Une vérification régulière s'impose",
       body: "La climatisation crée les conditions d'une attention qui n'est pas perturbée par la température extérieure.\n\nVotre climatisation est à vérifier tous les ans et à faire recharger tous les 2 ans. Le filtre d'habitacle est à changer tous les ans."
     } ],
     [ :checklist, {
-      eyebrow: "Diagnostic",
       heading: "Les signes qui doivent alerter",
       settings: { tone: "dark" },
       items: [
@@ -577,7 +558,6 @@ build_page(
       ]
     } ],
     [ :pricing, {
-      eyebrow: "Forfaits",
       heading: "Nos forfaits climatisation",
       body: "Le forfait Recharge climatisation comprend : le contrôle de la température de l'habitacle, le tirage du circuit de climatisation, la réinjection de gaz dans le circuit et le contrôle du bon fonctionnement du système.\n\nOffre réservée aux particuliers et non cumulable avec d'autres promotions en cours. Photos non contractuelles.",
       items: [
@@ -586,7 +566,8 @@ build_page(
       ]
     } ],
     [ :cta, {
-      heading: "Prendre rendez-vous pour la clim",
+      heading: "Prendre rendez-vous pour la climatisation",
+      body: "Prévoyez le passage avant l'été : c'est la période où les délais s'allongent.",
       settings: { tone: "signal" },
       items: [
         { title: "Nous appeler", link_url: "tel:+33468505068", value: "principal" },
@@ -604,7 +585,7 @@ build_page(
   sections: [
     [ :hero, {
       eyebrow: "Trains roulants",
-      heading: "Parallélisme et *géométrie 3D*",
+      heading: "Parallélisme et géométrie 3D",
       subheading: "Il est indispensable de faire contrôler la géométrie de votre véhicule au moins une fois par an.",
       image: "atelier-jaune.jpg"
     } ],
@@ -613,7 +594,6 @@ build_page(
       body: "Le contrôle et le réglage de la géométrie consistent à optimiser tous les angles et alignements réglables sur votre véhicule, en conformité avec les données du constructeur et l'analyse des usures des pneumatiques.\n\n## Une géométrie déréglée entraîne\n\n- Une usure rapide et anormale de vos pneus\n- Une usure prématurée des éléments de direction\n- Une tenue de route aléatoire"
     } ],
     [ :checklist, {
-      eyebrow: "Avantages",
       heading: "Ce que vous y gagnez",
       settings: { tone: "dark" },
       items: [
@@ -624,7 +604,6 @@ build_page(
       ]
     } ],
     [ :pricing, {
-      eyebrow: "Tarifs",
       heading: "Nos tarifs de géométrie",
       items: [
         { title: "Parallélisme avant", value: "65 €", body: "Voiture." },
@@ -633,8 +612,8 @@ build_page(
       ]
     } ],
     [ :cta, {
-      heading: "Vos pneus s'usent d'un seul côté ?",
-      body: "C'est le signe d'une géométrie à contrôler.",
+      heading: "Prendre rendez-vous pour une géométrie",
+      body: "Une usure des pneus d'un seul côté, un volant décentré ou une voiture qui tire sont les signes d'une géométrie à contrôler.",
       items: [ { title: "Prendre rendez-vous", link_url: "/contact", value: "principal" } ]
     } ]
   ]
@@ -647,11 +626,10 @@ devis = build_page(
   title: "Devis gratuits",
   slug: "devis", nav_label: "Devis gratuits", status: :published, position: 6,
   seo_title: "Devis pneus et mécanique gratuits — Cabestany",
-  meta_description: "Demandez un devis gratuit pour vos pneus ou pour une intervention mécanique. Réponse sous 48 h ouvrées.",
+  meta_description: "Deux formulaires de devis gratuits et sans engagement : l'un pour les pneus, l'autre pour la mécanique et l'entretien.",
   sections: [
     [ :hero, {
-      eyebrow: "Sans engagement",
-      heading: "Vos devis *gratuits*",
+      heading: "Devis gratuits",
       subheading: "Deux formulaires, selon que votre besoin concerne les pneumatiques ou la mécanique."
     } ],
     [ :cards, {
@@ -670,16 +648,15 @@ build_page(
   slug: "devis-pneus-perpignan", nav_label: "Devis pneus",
   status: :published, position: 0, parent: devis,
   seo_title: "Devis pneus gratuit — Perpignan, Cabestany",
-  meta_description: "Demandez votre devis pneus : type, gamme, dimensions, véhicule. Réponse rapide, montage et équilibrage inclus dans nos prix.",
+  meta_description: "Devis pneus gratuit : type, gamme, dimensions et véhicule. Le prix annoncé comprend le montage, l'équilibrage et les valves.",
   sections: [
     [ :hero, {
       eyebrow: "Devis gratuit",
-      heading: "Devis *pneus*",
+      heading: "Devis pneus",
       subheading: "Les dimensions se lisent sur le flanc du pneu, par exemple 205/55 R16 91 V."
     } ],
-    [ :form, { eyebrow: "Formulaire", heading: "Votre demande de devis pneus",
-               settings: { form_type: "devis_pneus", tone: "paper" } } ],
-    [ :rich_text, { heading: "Liste d'opposition Bloctel", body: BLOCTEL } ]
+    [ :form, { heading: "Votre demande de devis pneus",
+               settings: { form_type: "devis_pneus", tone: "paper" } } ]
   ]
 )
 
@@ -692,12 +669,11 @@ build_page(
   sections: [
     [ :hero, {
       eyebrow: "Devis gratuit",
-      heading: "Devis *mécanique*",
+      heading: "Devis mécanique",
       subheading: "Cochez les interventions souhaitées et décrivez votre véhicule."
     } ],
-    [ :form, { eyebrow: "Formulaire", heading: "Votre demande de devis mécanique",
-               settings: { form_type: "devis_mecanique", tone: "paper" } } ],
-    [ :rich_text, { heading: "Liste d'opposition Bloctel", body: BLOCTEL } ]
+    [ :form, { heading: "Votre demande de devis mécanique",
+               settings: { form_type: "devis_mecanique", tone: "paper" } } ]
   ]
 )
 
@@ -713,8 +689,7 @@ build_page(
   meta_description: "L'atelier, le stock de pneus, le comptoir de pièces détachées et nos interventions en images.",
   sections: [
     [ :hero, {
-      eyebrow: "Visite",
-      heading: "Le garage en *photos*",
+      heading: "Le garage en photos",
       subheading: "L'atelier, le stock, le comptoir et quelques interventions."
     } ],
     [ :gallery, {
@@ -726,58 +701,25 @@ build_page(
 )
 
 build_page(
-  title: "Contact et mentions légales",
+  title: "Contact",
   slug: "contact", nav_label: "Contact", status: :published, position: 8,
   seo_title: "Contact — Point Pneus Guerido, Cabestany",
   meta_description: "Point Pneus Guerido, 9 rue Henri Becquerel, 66330 Cabestany. Téléphone 04 68 50 50 68. Ouvert du lundi au vendredi.",
   sections: [
     [ :hero, {
       eyebrow: "Cabestany (66)",
-      heading: "Nous *contacter*",
+      heading: "Nous contacter",
       subheading: "Pour toute demande d'informations, le plus simple reste de nous appeler.",
       items: [ { title: "04 68 50 50 68", link_url: "tel:+33468505068", value: "principal" } ]
     } ],
-    [ :contact_info, {
-      heading: "Coordonnées",
-      body: "Pour toute demande d'informations, prière de nous contacter par téléphone. Vous pouvez également utiliser le formulaire ci-dessous."
+    # Coordonnées, horaires et formulaire dans une seule bande : le formulaire
+    # attendait jusqu'ici en cinquième position, deux mille pixels plus bas.
+    [ :contact_panel, {
+      heading: "Nous écrire, ou passer nous voir",
+      subheading: "Une question sur une prestation, une disponibilité, un délai ? Écrivez-nous. Pour un besoin urgent, le téléphone reste le plus rapide.",
+      settings: { form_type: "contact" }
     } ],
-    [ :hours, { heading: "Horaires d'ouverture", settings: { tone: "dark" } } ],
-    [ :map, { heading: "Plan d'accès", body: "9 rue Henri Becquerel, 66330 Cabestany." } ],
-    [ :form, { heading: "Nous écrire", settings: { form_type: "contact", tone: "paper" } } ],
-    [ :rich_text, {
-      heading: "Mentions légales",
-      body: <<~TXT.strip
-        ## Éditeur du site
-
-        Le site https://www.point-pneus-guerido.com est édité par la société Point Pneus Guerido,
-        SARL au capital de 7 622,45 €, située 9 rue Henri Becquerel, 66330 Cabestany, enregistrée au
-        R.C.S. de Perpignan sous le numéro 450 045 430, TVA FR92450045430.
-
-        La directrice de la publication est FRANCO Marilyne, gérante de l'entreprise.
-        Vous pouvez nous contacter par mail à l'adresse [pointpneusguerido@free.fr](mailto:pointpneusguerido@free.fr)
-        ou par téléphone au 04 68 50 50 68.
-
-        ## Hébergement du site
-
-        Le prestataire des services d'hébergement du site est la société OVH SAS, située au
-        2 rue Kellermann, 59100 Roubaix.
-
-        ## Liste d'opposition Bloctel
-
-        #{BLOCTEL}
-
-        ## Médiateur de la consommation — Mobilians
-
-        Le médiateur du Conseil national des professions de l'automobile (CNPA) peut vous aider à
-        régler à l'amiable un litige qui vous oppose à un adhérent du CNPA-MOBILIANS.
-
-        Les consommateurs doivent transmettre leurs demandes de médiation :
-
-        - par courrier postal, à l'adresse : M. le Médiateur de Mobilians, 43 bis route de Vaugirard – CS 80016 – 92197 Meudon Cedex
-        - par courriel à l'adresse [mediateur@mediateur-mobilians.fr](mailto:mediateur@mediateur-mobilians.fr)
-        - sur son site internet : [mediateur-mobilians.fr](https://www.mediateur-mobilians.fr)
-      TXT
-    } ]
+    [ :map, { heading: "Plan d'accès", body: "9 rue Henri Becquerel, 66330 Cabestany.", settings: { tone: "dark" } } ]
   ]
 )
 

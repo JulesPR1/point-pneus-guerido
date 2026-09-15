@@ -1,0 +1,29 @@
+<%#
+  Le bloc principal d'une page contact : à gauche ce qu'il faut pour venir ou
+  téléphoner, à droite le formulaire. Une seule bande au lieu de trois, et le
+  formulaire cesse d'attendre en bas de page que le visiteur descende jusqu'à
+  lui.
+%>
+<% definition = FormDefinition.find(section.setting(:form_type)) %>
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <div class="contact-panel">
+    <div class="contact-panel__info">
+      <%= render "shared/contact_details", with_directions: false %>
+
+      <% if site_setting.hours.any? %>
+        <%= content_tag sub_heading_tag, "Horaires d'ouverture", class: "contact-panel__title" %>
+        <%= render "shared/hours_table" %>
+      <% end %>
+
+      <%= cms_text section.body %>
+    </div>
+
+    <div class="contact-panel__form">
+      <% if definition.nil? %>
+        <p>Formulaire indisponible.</p>
+      <% else %>
+        <%= render "shared/public_form", definition: definition, intro: nil %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -26,14 +26,31 @@ très espacées partout.
 |---|---|---|
 | Titres, signalétique, chiffres | **Archivo** (variable, `wdth` 100→125, `wght` 400→800) | Grotesque de signalétique, très haute en capitales, chasses larges disponibles ; parfaite pour un titre d'atelier |
 | Texte courant, interface | **Instrument Sans** | Humaniste, chaleureuse, excellente en petit corps — apporte le « local et humain » |
-| Accents éditoriaux, citations, chiffres mis en avant | **Instrument Serif** (italique) | Une seule respiration éditoriale par page ; évite le ton purement technique |
 
-Les trois familles sont **auto-hébergées** en WOFF2 (sous-ensembles `latin` + `latin-ext`,
-`font-display: swap`) : aucune requête vers un CDN tiers, pas d'exposition RGPD.
+**Deux familles, pas trois.** Une troisième, Instrument Serif en italique, était déclarée pour
+deux sélecteurs décoratifs — dont un que le site ne rendait jamais. Quatre fichiers de police
+pour un effet d'accent : retirée.
+
+Aucune des deux ne vient du fonds de police qu'on retrouve d'un SaaS à l'autre. Archivo est une
+grotesque de signalétique, choisie pour ce qu'elle fait sur un panneau d'atelier ; Instrument Sans
+est là pour sa lisibilité en petit corps dans un formulaire de devis à trente champs. Ni l'une ni
+l'autre ne porte l'identité du site à elle seule : ce sont les photos de l'atelier, le jaune du
+logo et les prix affichés qui la portent.
+
+Les deux familles sont **auto-hébergées** en WOFF2 (sous-ensembles `latin` + `latin-ext`,
+`font-display: swap`) : aucune requête vers un CDN tiers, pas d'exposition RGPD. Les deux piles
+de repli sont des polices système (`Helvetica Neue`, `Arial`), pas une police web de secours.
 
 Échelle fluide en `clamp()`, de `--step--1` à `--step-5`. Une seule taille par niveau,
 jamais de titre géant sans hiérarchie : `h1` culmine à `--step-5`, `h2` à `--step-3`,
 `h3` à `--step-1`.
+
+**Étiquettes.** Les capitales servent à nommer un champ ou une rubrique — « TÉLÉPHONE »,
+« NOUS TROUVER » — jamais à faire du décor. Un seul interlettrage, `--tracking-label: 0.04em`,
+pour toutes. Les valeurs de 0,10 em et 0,12 em qui traînaient écartaient les lettres au point
+que le mot se lisait comme un motif. Et ce qui n'est pas une étiquette n'est pas en capitales :
+un jour de la semaine, une date d'avis, un titre de famille de pièces, le libellé d'un bouton
+gardent leur casse.
 
 ## 3. Couleurs
 
@@ -88,10 +105,17 @@ filets de 1 px.
 
 `.btn` (`--primary`, `--ghost`, `--on-dark`, `--quiet`, `--danger`, tailles `--lg`/`--sm`) ·
 `.field` + `.input` + `.select` + `.textarea` · `.choice` (radio/case à cocher en tuile tactile) ·
-`.card` (photo + corps) · `.tile` (pastille d'icône + titre + lien) · `.tile__icon` ·
+`.card` (photo + corps) · `.tile` (icône + titre + lien) · `.tile__icon` ·
 `.badge` (`--new`, `--in_progress`, `--handled`, `--archived`) ·
 `.eyebrow` · `.rule--accent` · `.price-row` (conducteur pointillé) ·
-`.icon-picker` (bibliothèque d'icônes du back-office) · `.toast` · `.stat` · `.hours-table` · `.gallery` · `.site-nav` / `.drawer` · `.pagination` · `.flash`.
+`.icon-picker` (bibliothèque d'icônes du back-office) · `.toast` · `.stat` · `.hours-table` ·
+`.gallery` · `.contact-panel` · `.legal` (mentions légales) · `.site-nav` / `.drawer` ·
+`.pagination` · `.flash`.
+
+**Boîtes de dialogue** (`.lightbox`, `.legal`) : `<dialog>` natif, ouvert par `showModal()`. Le
+piège de focus, la touche Échap et l'inertie de l'arrière-plan viennent du navigateur ; rien
+n'est réimplémenté et rien n'est animé. Les mentions légales gardent un repli `:target` : sans
+JavaScript, le lien du pied de page reste un lien d'ancre et le texte s'affiche dans le flux.
 
 **Boutons** : aplat de couleur, bord adouci, libellé en casse normale. La hiérarchie passe par la
 couleur (jaune = action principale, blanc bordé = action secondaire, contour clair sur fond noir),
@@ -102,7 +126,9 @@ copiée telle quelle dans `vendor/icons/lucide` par `bin/rails icons:import`. Le
 back-office est déclaré dans `Icon::GROUPS` : ajouter une icône, c'est la nommer dans un groupe puis
 relancer la tâche. Seul l'intérieur du fichier SVG est repris ; le `<svg>` est reconstruit par
 `icon_tag`, donc toutes les icônes gardent la même boîte 24×24, la même graisse de trait et
-`currentColor`, et se posent dans la pastille jaune. Chaque service d'une grille choisit son icône
+`currentColor`. L'icône est posée nue, en gris d'encre : elle aide à reconnaître un service dans
+une grille de six, mais la pastille jaune qui l'entourait faisait d'elle un ornement sur chaque
+carte. Chaque service d'une grille choisit son icône
 dans le sélecteur du back-office (recherche insensible aux accents, aperçu immédiat) ; laissé vide,
 le champ retombe sur une déduction à partir du titre (« climatisation » → thermomètre flocon,
 « parallélisme » → géométrie 3D, …).
@@ -120,12 +146,19 @@ back-office garde la bande `.flash` : c'est un outil, l'information y reste au f
 
 ## 7. Interactions
 
-- Une seule orchestration à l'arrivée : révélation échelonnée du hero (`animation-delay`).
-- Apparition des sections au défilement via `animation-timeline: view()`, sous `@supports`,
-  avec un état final visible par défaut : sans support, rien ne casse.
+- Rien ne s'anime à l'arrivée : la première ligne du hero porte l'information la plus utile
+  de la page, elle n'a pas à s'assembler en six temps devant le visiteur.
+- **Aucune apparition au défilement.** Ce paragraphe décrivait une révélation par
+  `animation-timeline: view()` qui n'a jamais existé dans la feuille de style ; elle n'a pas été
+  écrite, et elle ne le sera pas. Une section arrive parce qu'on est descendu jusqu'à elle.
 - Survols : changement de fond sur les boutons, passage de `--shadow-sm` à `--shadow-lift` sur
-  les cartes, léger zoom de la photo, flèche du lien qui avance de 3 px. Rien ne se déplace
-  sous le curseur.
+  les cartes, flèche du lien qui avance de 3 px. Rien ne se déplace sous le curseur. Le zoom de
+  la photo de carte a été retiré — l'ombre disait déjà « ceci est cliquable », le zoom ne disait
+  rien de plus. Celui de la galerie reste : c'est la seule marque de survol d'une vignette, et il
+  annonce l'agrandissement au clic.
+- **Pas de halo, pas de dégradé d'ambiance.** Le hero portait un `radial-gradient` blanc à 7 %
+  pour « ne pas laisser le noir à plat ». Il ne portait aucune information : retiré. Le seul
+  dégradé qui reste est le chevron d'un `<select>`, dessiné en CSS.
 - `:focus-visible` toujours visible : contour jaune de 2 px avec 2 px d'offset.
 - `@media (prefers-reduced-motion: reduce)` neutralise toutes les transitions et animations.
 

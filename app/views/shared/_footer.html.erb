@@ -59,9 +59,16 @@
     <% end %>
   </div>
 
-  <div class="shell">
+  <div class="shell" <%= tag.attributes(data: { controller: "legal" }) if site_setting.legal_notice.present? %>>
     <div class="site-footer__legal">
       <span>© <%= Date.current.year %> <%= site_setting.company_name %></span>
+      <% if site_setting.legal_notice.present? %>
+        <%= link_to "Mentions légales", "#mentions-legales",
+                    data: { action: "legal#open" }, aria: { haspopup: "dialog" } %>
+      <% end %>
     </div>
+    <% if site_setting.legal_notice.present? %>
+      <%= render "shared/legal_dialog" %>
+    <% end %>
   </div>
 </footer>

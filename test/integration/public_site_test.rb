@@ -19,6 +19,80 @@ class PublicSiteTest < ActionDispatch::IntegrationTest
     assert_no_match(/\*mécanique\*/, response.body)
   end
 
+  test "the hero practical details are shown on the home page only" do
+    interior = create_page(title: "Géométrie 3D", slug: "geometrie-3d")
+    create_section(interior, kind: "hero", heading: "Parallélisme")
+
+    get root_path
+    assert_select ".hero__meta", 1
+
+    get page_path("geometrie-3d")
+    assert_select ".hero__meta", 0
+  end
+
+  test "a link with no label falls back to the item title, never to \"Découvrir\"" do
+    page = create_page(title: "Entretiens", slug: "entretiens")
+    section = create_section(page, kind: "service_grid", heading: "Nos prestations")
+    section.items.create!(title: "Rénovation de phares", link_url: "/renovation-phares")
+    cards = create_section(page, kind: "cards", heading: "Le garage")
+    cards.items.create!(title: "Les pièces détachées", link_url: "/nos-pieces-detachees")
+
+    get page_path("entretiens")
+    assert_select "a.tile__link", text: "Rénovation de phares"
+    assert_select "a.tile__link", text: "Les pièces détachées"
+    assert_select "a.tile__link", text: /Découvrir|En savoir plus/, count: 0
+  end
+
+  test "a public form promises no delay the site cannot keep" do
+    create_section(@home, kind: "form", heading: "Nous écrire",
+                   settings: { "form_type" => "contact" })
+
+    get root_path
+    assert_select ".form-actions .form-required-note" do |notes|
+      assert_no_match(/48 h|sous \d+ ?h|délai/i, notes.first.text)
+      assert_match(/04 68 50 50 68/, notes.first.text)
+    end
+  end
+
+  test "the legal notices live in one dialog, opened from the footer" do
+    SiteSetting.instance.update!(legal_notice: "## Éditeur du site\n\nSARL au capital de 7 622,45 €.")
+    other = create_page(title: "Devis pneus", slug: "devis-pneus")
+    create_section(other, heading: "Formulaire")
+
+    get root_path
+    assert_select ".site-footer__legal a[href='#mentions-legales']", text: "Mentions légales"
+    assert_select "dialog#mentions-legales[aria-labelledby=?]", "mentions-legales-titre"
+    assert_select "dialog#mentions-legales h3", "Éditeur du site"
+
+    # Une seule fois dans le site : la boîte du pied de page, et rien d'autre.
+    get page_path("devis-pneus")
+    assert_equal 1, response.body.scan("SARL au capital de 7 622,45 €.").size
+  end
+
+  test "no footer legal link when the notices have not been written" do
+    SiteSetting.instance.update!(legal_notice: nil)
+
+    get root_path
+    assert_select "dialog#mentions-legales", 0
+    assert_select ".site-footer__legal a", 0
+  end
+
+  test "the contact panel puts the form beside the practical details" do
+    SiteSetting.instance.update!(opening_hours: "Lundi – vendredi|8h – 18h30\nSamedi|Fermé")
+    page = create_page(title: "Contact", slug: "contact")
+    create_section(page, kind: "contact_panel", heading: "Nous écrire",
+                   subheading: "Écrivez-nous.", body: nil,
+                   settings: { "form_type" => "contact" })
+
+    get page_path("contact")
+    assert_response :success
+    assert_select ".contact-panel__info .contact-block", 2
+    assert_select ".contact-panel__info .hours-table"
+    assert_select ".contact-panel__form form"
+    # Le chapô est rendu une fois, au-dessus des deux colonnes.
+    assert_equal 1, response.body.scan("Écrivez-nous.").size
+  end
+
   test "an interior page is served from its slug" do
     page = create_page(title: "Géométrie 3D", slug: "geometrie-3d")
     create_section(page, heading: "Parallélisme")

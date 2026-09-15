@@ -24,18 +24,22 @@
         </div>
       <% end %>
 
-      <div class="hero__meta">
-        <% if site_setting.full_address.present? %>
-          <span><b>L'atelier</b><%= site_setting.full_address %></span>
-        <% end %>
-        <% if site_setting.phone.present? %>
-          <span><b>Téléphone</b><a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a></span>
-        <% end %>
-        <% first_slot = site_setting.hours.first %>
-        <% if first_slot %>
-          <span><b><%= first_slot.first %></b><%= first_slot.last %></span>
-        <% end %>
-      </div>
+      <%# Adresse, téléphone et horaires : sur l'accueil seulement. Ailleurs ils
+          sont déjà dans la barre supérieure, le pied de page et la page contact. %>
+      <% if @page&.home? %>
+        <div class="hero__meta">
+          <% if site_setting.full_address.present? %>
+            <span><b>L'atelier</b><%= site_setting.full_address %></span>
+          <% end %>
+          <% if site_setting.phone.present? %>
+            <span><b>Téléphone</b><a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a></span>
+          <% end %>
+          <% first_slot = site_setting.hours.first %>
+          <% if first_slot %>
+            <span><b><%= first_slot.first %></b><%= first_slot.last %></span>
+          <% end %>
+        </div>
+      <% end %>
     </div>
 
     <% if section.image.attached? %>

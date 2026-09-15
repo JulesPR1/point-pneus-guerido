@@ -25,7 +25,7 @@
   background: var(--ink-900);
   color: var(--steel-300);
   font-size: var(--step--2);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-label);
 }
 .topbar__inner {
   display: flex;
@@ -44,7 +44,7 @@
   gap: var(--space-2);
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-label);
   color: var(--signal);
   text-decoration: none;
 }
@@ -219,10 +219,8 @@
   justify-content: center;
   min-height: 3.5rem;
   font-family: var(--font-display);
-  font-size: var(--step--1);
+  font-size: var(--step-0);
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   text-decoration: none;
 }
 .mobile-actions a + a { background: var(--signal); }
@@ -274,14 +272,6 @@ body { padding-bottom: 3.5rem; }
   background: var(--ink-900);
   color: var(--paper-100);
   overflow: hidden;
-}
-/* A soft top-left lift so the black isn't a dead flat field. */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(90rem 40rem at 12% 0%, rgb(255 255 255 / 0.07), transparent 60%);
-  pointer-events: none;
 }
 .hero__grid {
   position: relative;
@@ -336,16 +326,8 @@ body { padding-bottom: 3.5rem; }
   border-radius: var(--radius-3);
 }
 
-/* Staggered entrance, once, on load. */
-.hero__title, .hero__sub, .hero__body, .hero__actions, .hero__meta, .hero__figure {
-  animation: rise 620ms var(--ease) backwards;
-}
-.hero__sub     { animation-delay: 70ms; }
-.hero__body    { animation-delay: 110ms; }
-.hero__actions { animation-delay: 160ms; }
-.hero__meta    { animation-delay: 210ms; }
-.hero__figure  { animation-delay: 120ms; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+/* Pas d'entrée animée : la première ligne du hero porte l'information la plus
+   utile de la page, elle n'a pas à arriver en six temps. */
 
 /* ---------- Cards, tiles, grids --------------------------------- */
 .grid { display: grid; gap: var(--space-5); grid-template-columns: 1fr; }
@@ -374,17 +356,12 @@ body { padding-bottom: 3.5rem; }
 /* Yellow chip + line icon: the thing that stops six identical boxes from
    reading as a placeholder grid. */
 .tile__icon {
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  display: block;
   margin-bottom: var(--space-1);
-  border-radius: var(--radius-2);
-  background: var(--signal);
-  color: var(--ink-900);
+  color: var(--ink-600);
 }
-.tile__icon svg { width: 1.45rem; height: 1.45rem; }
-.section--dark .tile__icon { background: var(--signal); }
+.tile__icon svg { width: 1.6rem; height: 1.6rem; }
+.section--dark .tile__icon { color: var(--signal); }
 
 .tile h2, .tile h3, .tile h4 { font-size: var(--step-1); letter-spacing: -0.01em; }
 .tile p { font-size: var(--step--1); color: var(--steel-600); line-height: 1.65; }
@@ -421,12 +398,11 @@ body { padding-bottom: 3.5rem; }
   transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .card:hover { box-shadow: var(--shadow-lift); border-color: var(--steel-300); }
-.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 420ms var(--ease); }
-.card:hover img { transform: scale(1.03); }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .card > a:first-child, .card figure { overflow: hidden; }
 .card__body { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5) var(--space-6) var(--space-6); }
 .card__body h2, .card__body h3, .card__body h4 { font-size: var(--step-1); letter-spacing: -0.01em; }
-.card__sub { font-family: var(--font-accent); font-style: italic; color: var(--steel-600); }
+.card__sub { font-family: var(--font-display); font-weight: 700; font-size: var(--step--1); color: var(--steel-600); }
 .card__body p { font-size: var(--step--1); color: var(--steel-600); line-height: 1.65; }
 .card .tile__link { margin-top: var(--space-2); padding-top: var(--space-2); }
 
@@ -474,7 +450,7 @@ body { padding-bottom: 3.5rem; }
 }
 .section--dark .stat { border-color: var(--hairline-dark); }
 .section--dark .stat__value { color: var(--signal); }
-.stat__label { margin-top: var(--space-3); font-family: var(--font-display); font-size: var(--step--1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+.stat__label { margin-top: var(--space-3); font-family: var(--font-display); font-size: var(--step--1); font-weight: 700; text-transform: uppercase; letter-spacing: var(--tracking-label); }
 .stat__note { margin-top: var(--space-2); font-size: var(--step--1); color: var(--steel-600); }
 .section--dark .stat__note { color: var(--steel-400); }
 
@@ -523,9 +499,7 @@ body { padding-bottom: 3.5rem; }
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
   border-bottom: 3px solid var(--signal);
-  font-size: var(--step-0);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: var(--step-1);
 }
 .columns ul { display: grid; gap: var(--space-2); font-size: var(--step--1); }
 .columns li { padding-bottom: var(--space-2); border-bottom: 1px solid var(--hairline); color: var(--steel-600); }
@@ -611,13 +585,31 @@ body { padding-bottom: 3.5rem; }
 .brands__logo img { display: block; width: auto; height: 2.2rem; object-fit: contain; }
 .section--dark .brands__logo { background: var(--white); border-color: var(--hairline); }
 
+/* ---------- Contact panel --------------------------------------- */
+/* Coordonnées et horaires d'un côté, formulaire de l'autre. La colonne
+   d'information est la plus courte des deux : c'est donc elle qu'on épingle,
+   pour que le téléphone reste sous les yeux pendant qu'on remplit le
+   formulaire — quelqu'un qui préfère appeler ne doit pas avoir à remonter. */
+.contact-panel { display: grid; gap: var(--space-8); }
+.contact-panel__title { margin-top: var(--space-7); margin-bottom: var(--space-4); font-size: var(--step-1); }
+.contact-panel__info .prose { margin-top: var(--space-6); }
+
+@media (min-width: 60rem) {
+  .contact-panel {
+    grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .contact-panel__info { position: sticky; top: var(--space-7); }
+}
+
 /* ---------- Hours / contact / map ------------------------------- */
 .info-grid { display: grid; gap: var(--space-7); }
 @media (min-width: 52rem) { .info-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); } }
 
 .hours-table { width: 100%; max-width: 44rem; border-collapse: collapse; }
 .hours-table th, .hours-table td { padding: var(--space-3) 0; border-bottom: 1px solid var(--hairline); text-align: left; }
-.hours-table th { font-family: var(--font-display); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+.hours-table th { font-family: var(--font-display); font-size: var(--step-0); font-weight: 700; }
 .hours-table td { font-variant-numeric: tabular-nums; text-align: right; color: var(--steel-600); }
 .hours-table tr:first-child th, .hours-table tr:first-child td { border-top: 3px solid var(--ink-900); }
 .section--dark .hours-table th, .section--dark .hours-table td { border-color: var(--hairline-dark); }
@@ -630,10 +622,11 @@ body { padding-bottom: 3.5rem; }
   font-size: var(--step--2);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   color: var(--steel-500);
 }
 .contact-block dd { margin: 0 0 var(--space-4); font-size: var(--step-1); }
+.contact-block__address { font-style: normal; font-family: var(--font-display); font-weight: 700; }
 .contact-block dd a { font-family: var(--font-display); font-weight: 700; text-decoration: none; }
 .contact-block dd a:hover { text-decoration: underline; }
 
@@ -644,11 +637,93 @@ body { padding-bottom: 3.5rem; }
   display: grid; place-content: center; gap: var(--space-4); justify-items: center;
   padding: var(--space-6); text-align: center;
 }
+.map-actions { margin-top: var(--space-5); }
+
+/* ---------- Mentions légales (modale) --------------------------- */
+/* <dialog> natif : piège de focus, touche Échap et arrière-plan inerte sont
+   donnés par le navigateur. Rien à réimplémenter, rien à animer. */
+.legal {
+  width: min(48rem, calc(100vw - 2 * var(--space-5)));
+  max-height: min(42rem, calc(100vh - 2 * var(--space-7)));
+  padding: 0;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-3);
+  background: var(--white);
+  color: var(--ink-800);
+  box-shadow: var(--shadow-drawer);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.legal::backdrop { background: rgb(16 17 16 / 0.6); }
+
+/* Repli sans JavaScript : le lien du pied de page reste un lien d'ancre, et la
+   boîte s'ouvre en clair dans le flux. Avec JavaScript, showModal() ouvre la
+   boîte sans changer l'URL, donc :target ne se déclenche jamais. */
+.legal:target {
+  display: block;
+  position: static;
+  width: 100%;
+  max-width: 48rem;
+  max-height: none;
+  margin: 0 auto var(--space-8);
+}
+.legal__close { display: none; }
+.legal[open] .legal__close { display: block; }
+
+.legal__bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--white);
+}
+/* La boîte est affichée dans la « top layer », donc visuellement hors du pied
+   de page — mais elle en reste un descendant pour le sélecteur CSS. Les règles
+   du pied de page (titre blanc en capitales, liens sans soulignement) portent
+   la même spécificité et sont écrites plus bas dans le fichier : il faut donc
+   les annuler explicitement, d'où le préfixe .legal sur ces trois règles. */
+.legal .legal__bar h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+}
+.legal .legal__body { color: var(--ink-800); }
+.legal .legal__body a { color: inherit; text-decoration: underline; text-decoration-color: var(--signal-700); }
+.legal .legal__body ul { display: grid; gap: var(--space-2); }
+.legal__close {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-2);
+  background: var(--white);
+  font-size: var(--step-0);
+  line-height: 1;
+}
+.legal__close:hover { background: var(--paper-100); }
+
+.legal__body { padding: var(--space-6); }
+.legal__body h3 { margin-top: var(--space-7); font-size: var(--step-1); }
+.legal__body h3:first-child { margin-top: 0; }
+
 .map-frame--compact { aspect-ratio: 4 / 3; }
 .map-frame--compact .map-placeholder { gap: var(--space-3); padding: var(--space-4); }
-/* On the ink-dark footer the light plate and body colour have to be restated. */
-.site-footer .map-frame { border-color: var(--hairline-dark); background: var(--ink-700); }
-.site-footer .map-placeholder { color: var(--steel-300); }
+/* Sur un fond sombre — pied de page ou section « dark » — la plaque claire et
+   la couleur de texte doivent être redites, sinon le message de consentement
+   et son bouton se perdent dans le gris. */
+.site-footer .map-frame,
+.section--dark .map-frame { border-color: var(--hairline-dark); background: var(--ink-700); }
+.site-footer .map-placeholder,
+.section--dark .map-placeholder { color: var(--steel-300); }
 
 /* ---------- Forms on the public site ---------------------------- */
 .form-card {
@@ -675,7 +750,7 @@ body { padding-bottom: 3.5rem; }
 .fieldset__legend span {
   font-size: var(--step--2);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   color: var(--steel-400);
 }
 .fieldset__desc { margin: calc(var(--space-3) * -1) 0 var(--space-5); font-size: var(--step--1); color: var(--steel-600); }
@@ -695,8 +770,8 @@ body { padding-bottom: 3.5rem; }
   background: var(--white);
   box-shadow: var(--shadow-sm);
 }
-.quote p { font-family: var(--font-accent); font-size: var(--step-1); font-style: italic; line-height: 1.45; }
-.quote footer { margin-top: var(--space-4); font-family: var(--font-display); font-size: var(--step--1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.quote p { font-size: var(--step-1); line-height: 1.5; }
+.quote footer { margin-top: var(--space-4); font-family: var(--font-display); font-size: var(--step--1); font-weight: 700; text-transform: uppercase; letter-spacing: var(--tracking-label); }
 .quote cite { font-style: normal; }
 .quote__context { display: block; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--steel-600); }
 
@@ -743,7 +818,7 @@ body { padding-bottom: 3.5rem; }
   font-family: var(--font-display);
   font-size: var(--step--2);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--steel-600);
 }
@@ -804,7 +879,7 @@ body { padding-bottom: 3.5rem; }
   font-weight: 700;
 }
 .review__author { font-family: var(--font-display); font-size: var(--step-0); font-weight: 700; }
-.review__date { font-size: var(--step--2); letter-spacing: 0.04em; text-transform: uppercase; color: var(--steel-500); }
+.review__date { font-size: var(--step--2); color: var(--steel-500); }
 .review__body p { font-size: var(--step--1); line-height: 1.65; color: var(--ink-700); }
 .review__body p::before { content: "\201C"; }
 .review__body p::after { content: "\201D"; }
@@ -812,10 +887,8 @@ body { padding-bottom: 3.5rem; }
   margin-top: auto;
   padding-top: var(--space-2);
   font-family: var(--font-display);
-  font-size: var(--step--2);
+  font-size: var(--step--1);
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   text-decoration: none;
   color: var(--steel-600);
 }
@@ -838,7 +911,7 @@ body { padding-bottom: 3.5rem; }
 .site-footer h2 {
   font-size: var(--step--1);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--tracking-label);
   color: var(--paper-050);
   margin-bottom: var(--space-4);
 }

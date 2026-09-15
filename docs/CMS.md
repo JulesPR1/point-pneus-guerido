@@ -3,7 +3,8 @@
 ## 1. Modèle de données
 
 ```
-SiteSetting  (ligne unique)   coordonnées, horaires, logo, SEO par défaut, carte
+SiteSetting  (ligne unique)   coordonnées, horaires, logo, SEO par défaut, carte,
+                              mentions légales
 AdminUser    ──< Session      authentification du backoffice
 
 Page         ──< Section ──< SectionItem
@@ -43,7 +44,24 @@ d'élément (`SafeUrl`) — un `javascript:` saisi au backoffice n'atteint jamai
 
 Types livrés : hero, texte + image, grille de services, cartes illustrées, chiffres clés, tarifs,
 listes en colonnes, liste d'arguments, galerie, appel à l'action, bandeau, marques, horaires,
-coordonnées, carte, formulaire, témoignages, avis Google, contenu libre.
+coordonnées, contact (coordonnées + formulaire), carte, formulaire, témoignages, avis Google,
+contenu libre.
+
+### Le panneau de contact
+
+`contact_panel` est une bande à deux colonnes pour une page contact : à gauche les coordonnées
+et les horaires, lus dans les réglages du site ; à droite le formulaire choisi. Elle remplace la
+suite « Coordonnées » + « Horaires » + « Formulaire », qui reléguait le formulaire cinq bandes
+plus bas. Sur grand écran la colonne de gauche est épinglée : le téléphone reste visible pendant
+qu'on remplit le formulaire, pour qui préférerait finalement appeler.
+
+### Les mentions légales
+
+Elles ne sont pas une page ni une section : c'est le champ `legal_notice` des réglages du site,
+affiché dans une boîte de dialogue ouverte depuis le pied de page, sur toutes les pages. Un seul
+texte, un seul endroit où le corriger, et il n'apparaît nulle part ailleurs dans le site. Vider
+le champ retire le lien du pied de page. Le format est celui de tous les champs de texte long
+(ligne vide = paragraphe, `## ` = sous-titre, `- ` = puce, `[libellé](url)` = lien).
 
 ### Avis Google
 
@@ -113,11 +131,13 @@ Protections : jeton CSRF, limitation à 8 envois par 10 minutes et par IP, champ
 `map_autoload` (« Afficher la carte directement, sans bouton »), utilisé par la section « Carte »
 et par le pied de page :
 
-- **activé** (par défaut) : l'iframe est dans le HTML, la carte est simplement là. C'est le bon
-  réglage pour OpenStreetMap, qui ne dépose aucun cookie ;
-- **désactivé** : l'iframe n'est insérée qu'au clic (`map_controller.js`), donc un visiteur qui ne
-  demande pas le plan n'envoie aucune requête au fournisseur. À garder avec une carte **Google
-  Maps**, dont l'iframe dépose des cookies dès l'affichage et demande donc un consentement.
+- **activé** (par défaut, et le réglage livré dans le seed) : l'iframe est dans le HTML, la carte
+  est simplement là. L'embed fourni est une carte **Google Maps**, dont l'iframe dépose des
+  cookies dès l'affichage : le site a donc besoin d'un bandeau de consentement pour être
+  conforme. Un export **OpenStreetMap** ne trace personne et lève cette contrainte ;
+- **désactivé** : l'iframe n'est insérée qu'au clic (`map_controller.js`), donc un visiteur qui
+  ne demande pas le plan n'envoie aucune requête au fournisseur. C'est la façon de se passer de
+  bandeau tout en gardant la carte Google.
 
 ## 4. Images
 

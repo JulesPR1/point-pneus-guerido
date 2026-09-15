@@ -1,0 +1,30 @@
+<%#
+  Téléphone, e-mail et adresse, lus dans les réglages du site. Partagé par la
+  section « Coordonnées » et par le panneau de contact, pour que les deux
+  affichent exactement la même chose.
+
+  with_directions: ajoute le lien d'itinéraire. Le panneau de contact le laisse
+  à la section « Carte », qui est juste en dessous et dont c'est le rôle.
+%>
+<% with_directions = local_assigns.fetch(:with_directions, true) %>
+<dl class="contact-block">
+  <dt>Téléphone</dt>
+  <dd><a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a></dd>
+  <% if site_setting.email.present? %>
+    <dt>E-mail</dt>
+    <dd><a href="mailto:<%= site_setting.email %>"><%= site_setting.email %></a></dd>
+  <% end %>
+</dl>
+
+<dl class="contact-block">
+  <dt>Adresse</dt>
+  <dd>
+    <address class="contact-block__address">
+      <%= site_setting.address_line %><br>
+      <%= [ site_setting.postal_code, site_setting.city ].compact_blank.join(" ") %>
+    </address>
+  </dd>
+  <% if with_directions && site_setting.map_link_url.present? %>
+    <dd><%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url, class: "btn btn--ghost btn--sm", rel: "noopener", target: "_blank" %></dd>
+  <% end %>
+</dl>

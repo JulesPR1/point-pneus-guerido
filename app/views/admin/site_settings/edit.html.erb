@@ -47,6 +47,16 @@
       <p class="field-note">Une ligne par créneau, au format <code>Jour|Horaire</code>. Exemple : <code>Lundi – vendredi|8h – 12h / 14h – 18h30</code></p>
     </div>
 
+    <div class="field">
+      <%= f.label :legal_notice, "Mentions légales", class: "label" %>
+      <%= f.text_area :legal_notice, class: "textarea", rows: 12 %>
+      <p class="field-note">
+        Ouvertes depuis le pied de page, sur toutes les pages du site. Ligne vide = nouveau
+        paragraphe, <code>## </code> = sous-titre, <code>- </code> = puce,
+        <code>[libellé](https://…)</code> = lien. Laissez vide pour retirer le lien du pied de page.
+      </p>
+    </div>
+
     <div class="form-grid">
       <div class="field field--full">
         <%= f.label :map_embed_url, "URL d'intégration de la carte", class: "label" %>
@@ -59,9 +69,11 @@
           <span>Afficher la carte directement, sans bouton</span>
         </label>
         <p class="field-note">
-          Décochez si l'URL ci-dessus est une carte Google : l'iframe Google dépose des cookies dès
-          l'affichage, ce qui demande le consentement du visiteur. Le bouton « Afficher le plan d'accès »
-          tient ce rôle. OpenStreetMap ne dépose rien : la carte peut s'afficher directement.
+          Coché, la carte est dans la page. Si l'URL ci-dessus est une carte Google, son iframe dépose
+          des cookies dès l'affichage : il faut alors un bandeau de consentement sur le site.
+          Décoché, la carte n'est insérée qu'au clic sur « Afficher le plan d'accès », et aucune
+          requête ne part tant que le visiteur ne l'a pas demandé. Un export OpenStreetMap ne dépose
+          rien : avec lui, la case peut rester cochée sans autre précaution.
         </p>
       </div>
       <div class="field field--full">

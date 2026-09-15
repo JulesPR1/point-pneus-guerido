@@ -1,7 +1,17 @@
 <%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <% dark = section.setting(:tone) == "dark" %>
   <% if site_setting.map_embed_url.present? %>
-    <%= render "shared/map_embed" %>
-  <% elsif site_setting.map_link_url.present? %>
-    <%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url, class: "btn btn--ghost", rel: "noopener", target: "_blank" %>
+    <%= render "shared/map_embed", button_class: "btn btn--sm #{dark ? 'btn--on-dark' : 'btn--ghost'}" %>
+  <% end %>
+
+  <%# Le bouton d'itinéraire vit hors du cadre. Afficher la carte remplace le
+      contenu du cadre par l'iframe (map_controller.js retire le placeholder) :
+      tant que ce lien était dedans, il disparaissait au moment précis où le
+      visiteur venait de dire qu'il cherchait le chemin. %>
+  <% if site_setting.map_link_url.present? %>
+    <p class="map-actions">
+      <%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url,
+                  class: "btn btn--primary", rel: "noopener", target: "_blank" %>
+    </p>
   <% end %>
 <% end %>

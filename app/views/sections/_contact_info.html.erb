@@ -1,29 +1,6 @@
 <%= render layout: "sections/frame", locals: { section: section, index: index } do %>
   <div class="info-grid">
-    <dl class="contact-block">
-      <dt>Téléphone</dt>
-      <dd><a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a></dd>
-      <% if site_setting.email.present? %>
-        <dt>E-mail</dt>
-        <dd><a href="mailto:<%= site_setting.email %>"><%= site_setting.email %></a></dd>
-      <% end %>
-    </dl>
-
-    <dl class="contact-block">
-      <dt>Adresse</dt>
-      <dd>
-        <address style="font-style: normal; font-family: var(--font-display); font-weight: 700">
-          <%= site_setting.address_line %><br>
-          <%= [ site_setting.postal_code, site_setting.city ].compact_blank.join(" ") %>
-        </address>
-      </dd>
-      <% if site_setting.map_link_url.present? %>
-        <dd><%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url, class: "btn btn--ghost btn--sm", rel: "noopener", target: "_blank" %></dd>
-      <% end %>
-    </dl>
-
-    <div>
-      <%= cms_text section.body %>
-    </div>
+    <%= render "shared/contact_details" %>
+    <div><%= cms_text section.body %></div>
   </div>
 <% end %>

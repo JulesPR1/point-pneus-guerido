@@ -21,9 +21,6 @@
       <p>La carte est chargée depuis <%= map_provider_name %> uniquement si vous l'affichez.</p>
       <%= tag.button "Afficher le plan d'accès", type: "button",
                      class: button_class, data: { action: "map#load" } %>
-      <% if !compact && site_setting.map_link_url.present? %>
-        <%= link_to "Ou ouvrir l'itinéraire", site_setting.map_link_url, rel: "noopener", target: "_blank" %>
-      <% end %>
     </div>
   <% end %>
 </div>

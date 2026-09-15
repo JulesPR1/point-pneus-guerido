@@ -6,7 +6,7 @@
         <%= content_tag sub_heading_tag, item.title %>
         <% if item.body.present? %><p><%= item.body %></p><% end %>
         <% if item.link_url.present? %>
-          <%= link_to item.link_label.presence || "En savoir plus", item.link_url, class: "tile__link" %>
+          <%= link_to item.link_label.presence || item.title, item.link_url, class: "tile__link" %>
         <% end %>
       </li>
     <% end %>

@@ -1,0 +1,20 @@
+<%#
+  Les mentions légales vivent ici et nulle part ailleurs : une seule fois dans
+  le site, ouvertes depuis le pied de page.
+
+  Le contenu est dans le HTML plutôt que chargé à la demande, pour deux
+  raisons : il reste indexable, et sans JavaScript le lien du pied de page
+  reste un lien d'ancre — `.legal:target` affiche alors la boîte en clair, dans
+  le flux, au lieu de ne rien faire.
+%>
+<dialog class="legal" id="mentions-legales" aria-labelledby="mentions-legales-titre"
+        data-legal-target="dialog" data-action="click->legal#closeOnBackdrop">
+  <div class="legal__bar">
+    <h2 id="mentions-legales-titre">Mentions légales</h2>
+    <button type="button" class="legal__close" data-action="legal#close"
+            aria-label="Fermer les mentions légales">✕</button>
+  </div>
+  <div class="legal__body">
+    <%= cms_text site_setting.legal_notice %>
+  </div>
+</dialog>

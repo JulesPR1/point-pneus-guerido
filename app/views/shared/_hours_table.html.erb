@@ -1,0 +1,13 @@
+<%# Tableau des horaires, lu dans les réglages du site. Partagé par la section
+    « Horaires » et par le panneau de contact. %>
+<table class="hours-table">
+  <caption class="visually-hidden">Horaires d'ouverture</caption>
+  <tbody>
+    <% site_setting.hours.each do |day, slot| %>
+      <tr>
+        <th scope="row"><%= day %></th>
+        <td><%= slot %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

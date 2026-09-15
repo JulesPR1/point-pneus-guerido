@@ -11,7 +11,7 @@
           <% if item.subtitle.present? %><p class="card__sub"><%= item.subtitle %></p><% end %>
           <% if item.body.present? %><p><%= item.body %></p><% end %>
           <% if item.link_url.present? %>
-            <%= link_to item.link_label.presence || "Découvrir", item.link_url, class: "tile__link" %>
+            <%= link_to item.link_label.presence || item.title, item.link_url, class: "tile__link" %>
           <% end %>
         </div>
       </li>

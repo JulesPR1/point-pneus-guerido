@@ -153,9 +153,14 @@ pied de page (« Mots - clés relatifs », « Villes d'intervention »).
 | Logos de marques 35 px | Remplacés par les noms de marques en texte |
 | Slug `/27-2/` | Renommé `/climatisation/` |
 | `fsgdfgf` | Supprimé |
-| Crédit « Tanak International Ltd » | Conservé en pied de page |
+| Crédit « Tanak International Ltd » | **Retiré.** Le site a été refait : laisser ce crédit attribuerait la refonte à un auteur qui ne l'a pas faite |
 | Astérisques sans renvoi sur les tarifs de géométrie | Astérisques retirés, prix inchangés (aucune note n'existait sur le site source) |
 | « température de l'habitable » (forfait clim) | Coquille corrigée en « habitacle », sens inchangé |
 | Menus « Entretiens » et « Devis GRATUITS » (liens morts) | Transformés en vraies pages de rubrique listant leurs sous-pages |
 
 Aucun prix, horaire, marque, prestation, certification ni avis client n'a été inventé.
+
+> **Passe de correction (15/09/2026)** — une relecture éditoriale a retiré les formulations
+> ajoutées à la reprise qui n'avaient pas de source dans cet audit (délai de réponse, arguments
+> « pourquoi nous choisir », descriptions du garage, usure « 0 à 15 % », test « par une entreprise
+> agréée »). Le détail est dans [`docs/CORRECTIONS.md`](CORRECTIONS.md).

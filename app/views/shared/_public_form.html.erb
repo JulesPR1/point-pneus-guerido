@@ -51,7 +51,11 @@
 
     <div class="form-actions">
       <button type="submit" class="btn btn--primary btn--lg"><%= definition.submit_label %></button>
-      <p class="form-required-note">Réponse sous 48 h ouvrées. Aucune donnée n'est transmise à un tiers.</p>
+      <p class="form-required-note">
+        Votre demande est enregistrée et relue au garage&nbsp;; vos réponses ne servent qu'à la traiter
+        et ne sont transmises à personne d'autre. Pour une demande urgente, appelez-nous
+        au <a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a>.
+      </p>
     </div>
   <% end %>
 </div>

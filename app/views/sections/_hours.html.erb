@@ -1,13 +1,3 @@
 <%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
-  <table class="hours-table">
-    <caption class="visually-hidden">Horaires d'ouverture</caption>
-    <tbody>
-      <% site_setting.hours.each do |day, slot| %>
-        <tr>
-          <th scope="row"><%= day %></th>
-          <td><%= slot %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render "shared/hours_table" %>
 <% end %>

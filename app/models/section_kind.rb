@@ -134,6 +134,14 @@ class SectionKind
         fields: { eyebrow: { label: "Surtitre" }, heading: { label: "Titre" }, body: { label: "Texte" } },
         settings: [ TONE ]),
 
+    new(key: :contact_panel, label: "Contact : coordonnées + formulaire",
+        description: "Une seule bande pour une page contact : coordonnées et horaires à gauche (source : réglages du site), formulaire à droite.",
+        fields: { eyebrow: { label: "Surtitre" }, heading: { label: "Titre" },
+                  subheading: { label: "Chapô", hint: "Affiché au-dessus des deux colonnes" },
+                  body: { label: "Texte sous les horaires" } },
+        settings: [ TONE, { name: :form_type, label: "Type de formulaire", type: :select,
+                            options: %w[contact devis_pneus devis_mecanique], default: "contact" } ]),
+
     new(key: :map, label: "Carte", description: "Plan d'accès chargé à la demande (source : réglages du site).",
         fields: { eyebrow: { label: "Surtitre" }, heading: { label: "Titre" }, body: { label: "Texte" } },
         settings: [ TONE ]),
