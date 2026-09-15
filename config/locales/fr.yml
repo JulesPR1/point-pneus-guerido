@@ -1,0 +1,62 @@
+fr:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long_fr: "%-d %B %Y"
+    day_names: [dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+    month_names: [~, janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
+    abbr_month_names: [~, jan, fév, mar, avr, mai, juin, juil, août, sep, oct, nov, déc]
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short_fr: "%d/%m/%Y à %H:%M"
+      long_fr: "%-d %B %Y à %H:%M"
+  number:
+    format:
+      separator: ","
+      delimiter: " "
+    human:
+      storage_units:
+        units:
+          byte: o
+          kb: ko
+          mb: Mo
+          gb: Go
+  support:
+    array:
+      words_connector: ", "
+      two_words_connector: " et "
+      last_word_connector: " et "
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "est obligatoire"
+      taken: "est déjà utilisé"
+      invalid: "n'est pas valide"
+      too_long: "est trop long (%{count} caractères maximum)"
+      too_short: "est trop court (%{count} caractères minimum)"
+      inclusion: "n'est pas une valeur autorisée"
+      exclusion: "n'est pas disponible"
+  activerecord:
+    attributes:
+      page:
+        title: "Le titre"
+        slug: "L'adresse"
+        seo_title: "Le titre SEO"
+        meta_description: "La meta description"
+        parent_id: "La page parente"
+      section:
+        kind: "Le type de section"
+        heading: "Le titre"
+      section_item:
+        link_url: "Le lien"
+      media_item:
+        file: "Le fichier"
+      site_setting:
+        company_name: "La raison sociale"
+        phone: "Le téléphone"
+        email: "L'e-mail"
+      admin_user:
+        email_address: "L'adresse e-mail"
+        password: "Le mot de passe"

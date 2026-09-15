@@ -1,0 +1,47 @@
+<% id = "#{form_key}-#{field.key}" %>
+<% name = field.checkboxes? ? "submission[#{field.key}][]" : "submission[#{field.key}]" %>
+<% hint_id = field.hint.present? ? "#{id}-hint" : nil %>
+
+<div class="field field--<%= field.width %>">
+  <% if field.choice? && !field.select? %>
+    <fieldset style="border:0;padding:0;margin:0">
+      <legend class="label">
+        <%= field.label %><% if field.required %> <span class="label__required" aria-hidden="true">*</span><% end %>
+      </legend>
+      <% if field.hint.present? %><span class="hint" id="<%= hint_id %>"><%= field.hint %></span><% end %>
+      <div class="choices <%= "choices--inline" if field.options.size <= 4 %>">
+        <% field.options.each_with_index do |option, i| %>
+          <label class="choice" for="<%= id %>-<%= i %>">
+            <input type="<%= field.radio? ? "radio" : "checkbox" %>"
+                   id="<%= id %>-<%= i %>" name="<%= name %>" value="<%= option %>"
+                   <%= "checked" if Array(value).include?(option) %>
+                   <%= "aria-describedby=#{hint_id}" if hint_id %>>
+            <span class="choice__label"><%= option %></span>
+          </label>
+        <% end %>
+      </div>
+    </fieldset>
+  <% else %>
+    <label class="label" for="<%= id %>">
+      <%= field.label %><% if field.required %> <span class="label__required" aria-hidden="true">*</span><% end %>
+    </label>
+
+    <% if field.select? %>
+      <%= select_tag name, options_for_select(field.options, value),
+                     include_blank: "—", id: id, class: "select",
+                     required: field.required, "aria-describedby": hint_id %>
+    <% elsif field.textarea? %>
+      <%= text_area_tag name, value, id: id, class: "textarea", rows: 5,
+                        maxlength: field.maxlength, required: field.required,
+                        placeholder: field.placeholder, "aria-describedby": hint_id %>
+    <% else %>
+      <%= text_field_tag name, value, id: id, class: "input",
+                         type: form_input_type(field), maxlength: field.maxlength,
+                         required: field.required, placeholder: field.placeholder,
+                         inputmode: form_inputmode(field), autocomplete: form_autocomplete(field),
+                         "aria-describedby": hint_id %>
+    <% end %>
+
+    <% if field.hint.present? %><span class="hint" id="<%= hint_id %>"><%= field.hint %></span><% end %>
+  <% end %>
+</div>

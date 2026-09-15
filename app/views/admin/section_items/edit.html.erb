@@ -1,0 +1,8 @@
+<% content_for :title, "Élément" %>
+<div class="admin-head">
+  <div>
+    <h1><%= @item.section.definition.item.label %></h1>
+    <p>Section « <%= link_to @item.section.admin_title, edit_admin_section_path(@item.section) %> »</p>
+  </div>
+</div>
+<section class="panel"><%= render "form", item: @item %></section>

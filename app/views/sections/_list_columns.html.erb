@@ -1,0 +1,14 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <div class="columns">
+    <% section.items.each do |item| %>
+      <div>
+        <%= content_tag sub_heading_tag, item.title %>
+        <ul>
+          <% item.lines.each do |line| %>
+            <li><%= line %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+<% end %>

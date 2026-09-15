@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title><%= [ yield(:title).presence, "Administration", site_setting.company_name ].compact_blank.join(" — ") %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="<%= asset_path 'favicon.svg' %>" type="image/svg+xml">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "admin" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin">
+    <div class="admin-shell">
+      <%= render "admin/shared/sidebar" %>
+
+      <div class="admin-main">
+        <% if @breadcrumbs.present? %>
+          <ul class="breadcrumbs">
+            <% @breadcrumbs.each do |label, path| %>
+              <li><%= path ? link_to(label, path) : label %></li>
+            <% end %>
+          </ul>
+        <% end %>
+
+        <% flash.each do |type, message| %>
+          <p class="<%= flash_class(type) %>" role="<%= type.to_s == 'alert' ? 'alert' : 'status' %>"><%= message %></p>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<% content_for :title, @page.title %>
+<div class="admin-head">
+  <div>
+    <h1><%= @page.title %></h1>
+    <p>
+      <code><%= @page.path %></code> ·
+      <span class="badge badge--<%= @page.status %>"><%= @page.published? ? "Publiée" : "Brouillon" %></span>
+    </p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "Réglages de la page", edit_admin_page_path(@page), class: "btn btn--ghost btn--sm" %>
+    <% if @page.published? && !@page.home? %>
+      <%= button_to "Dépublier", unpublish_admin_page_path(@page), method: :patch, class: "btn btn--ghost btn--sm" %>
+    <% elsif @page.draft? %>
+      <%= button_to "Publier", publish_admin_page_path(@page), method: :patch, class: "btn btn--primary btn--sm" %>
+    <% end %>
+    <%= link_to "Aperçu ↗", @page.path, class: "btn btn--quiet btn--sm", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<section class="panel">
+  <h2>Sections de la page</h2>
+
+  <% if @sections.any? %>
+    <p class="field-note" style="margin-bottom: var(--space-4)">
+      Glissez une section par sa poignée pour la déplacer, ou utilisez les flèches.
+      L'ordre est enregistré immédiatement.
+    </p>
+    <ol class="section-list"
+        data-controller="sortable"
+        data-sortable-url-value="<%= reorder_admin_page_sections_path(@page) %>">
+      <% @sections.each do |section| %>
+        <li class="section-row" draggable="true"
+            data-sortable-target="item" data-id="<%= section.id %>"
+            <%= tag.attributes("data-inactive" => "") unless section.active? %>>
+          <span class="section-row__grip" data-sortable-target="handle" aria-hidden="true">⠿</span>
+
+          <div>
+            <div class="section-row__meta">
+              <strong><%= section.admin_title %></strong>
+              <span class="section-row__kind"><%= section.kind_label %></span>
+              <% unless section.active? %><span class="badge badge--off">Masquée</span><% end %>
+            </div>
+            <p class="section-row__pos">Position <%= section.position + 1 %> · <%= pluralize(section.items.size, "élément", plural: "éléments") %></p>
+          </div>
+
+          <div class="section-row__actions">
+            <%= button_to "↑", move_up_admin_section_path(section), method: :patch,
+                          class: "btn btn--ghost btn--sm", form: { style: "display:inline" },
+                          disabled: section == @sections.first, "aria-label": "Monter la section" %>
+            <%= button_to "↓", move_down_admin_section_path(section), method: :patch,
+                          class: "btn btn--ghost btn--sm", form: { style: "display:inline" },
+                          disabled: section == @sections.last, "aria-label": "Descendre la section" %>
+            <%= button_to section.active? ? "Masquer" : "Afficher", toggle_admin_section_path(section),
+                          method: :patch, class: "btn btn--ghost btn--sm" %>
+            <%= link_to "Éditer", edit_admin_section_path(section), class: "btn btn--ghost btn--sm" %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p class="empty">Cette page n'a pas encore de section. Choisissez un type ci-dessous.</p>
+  <% end %>
+</section>
+
+<section class="panel">
+  <h2>Ajouter une section</h2>
+  <div class="kind-grid">
+    <% SectionKind::ALL.each do |kind| %>
+      <%= link_to new_admin_page_section_path(@page, kind: kind.key), class: "kind-card" do %>
+        <strong><%= kind.label %></strong>
+        <span><%= kind.description %></span>
+      <% end %>
+    <% end %>
+  </div>
+</section>

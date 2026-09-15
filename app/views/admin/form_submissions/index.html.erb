@@ -1,0 +1,62 @@
+<% content_for :title, "Demandes" %>
+<div class="admin-head">
+  <div>
+    <h1>Demandes reçues</h1>
+    <p><%= @pagination.total_count %> demande(s) — <%= FormSubmission.open_requests.count %> à traiter.</p>
+  </div>
+</div>
+
+<section class="panel">
+  <%= form_with url: admin_form_submissions_path, method: :get, class: "filters" do %>
+    <div class="field">
+      <%= label_tag :form_type, "Formulaire", class: "label" %>
+      <%= select_tag :form_type, options_for_select(FormDefinition.options_for_select, @form_type),
+                     include_blank: "Tous", class: "select" %>
+    </div>
+    <div class="field">
+      <%= label_tag :status, "Statut", class: "label" %>
+      <%= select_tag :status, options_for_select(FormSubmission.status_options, @status),
+                     include_blank: "Tous", class: "select" %>
+    </div>
+    <div class="field" style="flex: 1 1 14rem">
+      <%= label_tag :q, "Recherche (nom, e-mail, téléphone)", class: "label" %>
+      <%= text_field_tag :q, @query, class: "input" %>
+    </div>
+    <button type="submit" class="btn btn--primary btn--sm">Filtrer</button>
+    <%= link_to "Réinitialiser", admin_form_submissions_path, class: "btn btn--quiet btn--sm" %>
+  <% end %>
+
+  <p class="field-note" style="margin-bottom: var(--space-4)">
+    <% FormSubmission::STATUS_LABELS.each do |value, label| %>
+      <span class="badge badge--<%= value %>"><%= label %> · <%= @counts[value].to_i %></span>
+    <% end %>
+  </p>
+
+  <% if @submissions.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th>Reçue le</th><th>Formulaire</th><th>Contact</th><th>Téléphone</th><th>Statut</th><th class="right">Action</th></tr>
+        </thead>
+        <tbody>
+          <% @submissions.each do |submission| %>
+            <tr>
+              <td><%= l submission.created_at, format: :short_fr %></td>
+              <td><%= submission.type_label %></td>
+              <td>
+                <%= submission.contact_name.presence || "—" %><br>
+                <span style="color: var(--steel-500)"><%= submission.contact_email %></span>
+              </td>
+              <td><%= submission.contact_phone %></td>
+              <td><span class="badge badge--<%= submission.status %>"><%= submission.status_label %></span></td>
+              <td class="right"><%= link_to "Ouvrir", admin_form_submission_path(submission) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <%= render "admin/shared/pagination", pagination: @pagination %>
+  <% else %>
+    <p class="empty">Aucune demande ne correspond à ces filtres.</p>
+  <% end %>
+</section>

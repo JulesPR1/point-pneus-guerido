@@ -1,0 +1,20 @@
+<% tone = section.setting(:tone) %>
+<section class="section section--tight section--<%= tone %>" id="section-<%= section.id %>">
+  <div class="shell cta">
+    <div>
+      <% if section.eyebrow.present? %><p class="eyebrow"><%= section.eyebrow %></p><% end %>
+      <% if section.heading.present? %><h2><%= section.heading %></h2><% end %>
+      <% if section.body.present? %>
+        <div class="section__lede"><%= cms_text(section.body, class_name: "") %></div>
+      <% end %>
+    </div>
+    <% if section.items.any? %>
+      <div class="cta__actions">
+        <% section.items.each do |item| %>
+          <%= link_to item.title, item.link_url.presence || "#",
+                      class: "btn btn--lg #{cta_button_class(item, tone)}" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

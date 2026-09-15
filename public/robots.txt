@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /demandes
+
+Sitemap: https://www.point-pneus-guerido.com/sitemap.xml

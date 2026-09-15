@@ -1,0 +1,34 @@
+<%#
+  Shared shell for every "standard" section: tone, eyebrow,
+  heading and optional lede. Full-bleed types (hero, banner) render their own markup.
+%>
+<% tone = local_assigns.fetch(:tone, nil) || section.setting(:tone) %>
+<% lede = local_assigns[:lede] %>
+<% heading_tag = section.id == @h1_section_id ? :h1 : :h2 %>
+<%# Item titles sit one level below the section heading, so a reordered page
+    never produces an h1 → h3 jump. %>
+<% @section_heading_level = heading_tag == :h1 ? 1 : 2 %>
+<section class="section <%= "section--dark" if tone == "dark" %> <%= "section--paper" if tone == "paper" %>"
+         id="section-<%= section.id %>">
+  <div class="shell">
+    <div>
+      <% if section.eyebrow.present? || section.heading.present? || lede.present? %>
+        <header class="section__head">
+          <% if section.eyebrow.present? %>
+            <p class="eyebrow"><%= section.eyebrow %></p>
+          <% end %>
+          <% if section.heading.present? %>
+            <%= content_tag heading_tag, section.heading %>
+          <% end %>
+          <% if section.subheading.present? %>
+            <p class="section__lede"><%= section.subheading %></p>
+          <% end %>
+          <% if lede.present? %>
+            <div class="section__lede"><%= cms_text(lede, class_name: "") %></div>
+          <% end %>
+        </header>
+      <% end %>
+      <%= yield %>
+    </div>
+  </div>
+</section>

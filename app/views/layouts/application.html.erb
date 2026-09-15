@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title><%= document_title %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#101110">
+    <% if meta_description.present? %>
+      <meta name="description" content="<%= meta_description %>">
+    <% end %>
+    <link rel="canonical" href="<%= canonical_url %>">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="<%= site_setting.company_name %>">
+    <meta property="og:title" content="<%= document_title %>">
+    <meta property="og:url" content="<%= canonical_url %>">
+    <% if meta_description.present? %>
+      <meta property="og:description" content="<%= meta_description %>">
+    <% end %>
+    <% if (og = og_image_url) %>
+      <meta property="og:image" content="<%= og %>">
+      <meta name="twitter:card" content="summary_large_image">
+    <% end %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="<%= asset_path 'favicon.svg' %>" type="image/svg+xml">
+    <%= preload_link_tag asset_path("archivo-normal-latin.woff2"), as: "font", type: "font/woff2", crossorigin: "anonymous" %>
+    <%= preload_link_tag asset_path("instrument-sans-normal-latin.woff2"), as: "font", type: "font/woff2", crossorigin: "anonymous" %>
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_importmap_tags %>
+    <%= local_business_json_ld %>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <% cache [ "header", site_setting, content_version, request.path ] do %>
+      <%= render "shared/header" %>
+    <% end %>
+
+    <main id="contenu">
+      <%= yield %>
+    </main>
+
+    <%= render "shared/toasts" %>
+
+    <% cache [ "footer", site_setting, content_version ] do %>
+      <%= render "shared/footer" %>
+    <% end %>
+    <%= render "shared/mobile_actions" %>
+  </body>
+</html>

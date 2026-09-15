@@ -1,0 +1,10 @@
+<% @sections.each_with_index do |section, i| %>
+  <%= render "sections/#{section.kind}", section: section, index: i + 1 %>
+<% end %>
+
+<% if @sections.empty? %>
+  <div class="shell page-error">
+    <h1><%= @page.title %></h1>
+    <p>Cette page n'a pas encore de contenu.</p>
+  </div>
+<% end %>

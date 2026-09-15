@@ -1,0 +1,48 @@
+<% definition = item.section.definition.item %>
+<%= form_with model: item.new_record? ? [ :admin, item.section, item ] : [ :admin, item ],
+              class: "admin-form" do |f| %>
+  <%= render "admin/shared/errors", record: item %>
+
+  <% definition.fields.each do |field| %>
+    <div class="field">
+      <%= f.label field.name, field.label, class: "label" %>
+      <% if field.name == "body" %>
+        <%= f.text_area field.name, class: "textarea", rows: 5 %>
+      <% else %>
+        <%= f.text_field field.name, class: "input" %>
+      <% end %>
+      <% if field.hint.present? %><p class="field-note"><%= field.hint %></p><% end %>
+    </div>
+  <% end %>
+
+  <% if definition.icon %>
+    <%= render "admin/section_items/icon_field", f: f %>
+  <% end %>
+
+  <% if definition.image %>
+    <div class="field">
+      <%= f.label :image, "Image", class: "label" %>
+      <% if item.image.attached? %>
+        <div class="attachment-preview">
+          <%= image_tag item.image.variant(:thumb), alt: "" %>
+          <label class="checkbox-row" style="margin: 0">
+            <%= f.check_box :remove_image, {}, "1", "0" %>
+            <span>Supprimer cette image</span>
+          </label>
+        </div>
+      <% end %>
+      <%= f.file_field :image, class: "input", accept: "image/jpeg,image/png,image/webp,image/avif" %>
+    </div>
+  <% end %>
+
+  <div class="form-footer">
+    <%= f.submit item.new_record? ? "Ajouter" : "Enregistrer", class: "btn btn--primary" %>
+    <%= link_to "Retour à la section", edit_admin_section_path(item.section), class: "btn btn--quiet" %>
+    <% unless item.new_record? %>
+      <span class="spacer"></span>
+      <%= button_to "Supprimer", admin_section_item_path(item), method: :delete,
+                    class: "btn btn--danger btn--sm",
+                    form: { data: { turbo_confirm: "Supprimer cet élément ?" } } %>
+    <% end %>
+  </div>
+<% end %>

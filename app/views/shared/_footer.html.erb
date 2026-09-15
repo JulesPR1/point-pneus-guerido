@@ -1,0 +1,67 @@
+<hr class="rule--accent">
+<footer class="site-footer">
+  <div class="shell site-footer__grid">
+    <div>
+      <div class="footer__brand">
+        <% if site_setting.logo.attached? %>
+          <%= image_tag site_setting.logo, alt: site_setting.company_name, height: 42, loading: "lazy", decoding: "async" %>
+        <% else %>
+          <span class="brand__fallback"><%= site_setting.company_name %></span>
+        <% end %>
+      </div>
+      <% if site_setting.tagline.present? %>
+        <p style="margin-top: var(--space-4); max-width: 32ch"><%= site_setting.tagline %></p>
+      <% end %>
+      <% if site_setting.phone.present? %>
+        <a class="footer__phone" href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a>
+      <% end %>
+    </div>
+
+    <div>
+      <h2>Nous trouver</h2>
+      <address style="font-style: normal">
+        <%= site_setting.address_line %><br>
+        <%= [ site_setting.postal_code, site_setting.city ].compact_blank.join(" ") %>
+      </address>
+      <% if site_setting.email.present? %>
+        <p style="margin-top: var(--space-3)"><a href="mailto:<%= site_setting.email %>"><%= site_setting.email %></a></p>
+      <% end %>
+      <h2 style="margin-top: var(--space-7)">Horaires</h2>
+      <ul>
+        <% site_setting.hours.each do |day, slot| %>
+          <li><%= day %> — <%= slot %></li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Le garage</h2>
+      <ul>
+        <li><a href="<%= root_path %>">Accueil</a></li>
+        <% nav_pages.each do |page| %>
+          <li><a href="<%= page_path(page) %>"><%= page.nav_title %></a></li>
+          <% page.children.select { |c| c.published? && c.show_in_nav? }.each do |child| %>
+            <li><a href="<%= page_path(child) %>"><%= child.nav_title %></a></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+    <% if site_setting.map_embed_url.present? %>
+      <div>
+        <h2>Plan d'accès</h2>
+        <%= render "shared/map_embed", compact: true, button_class: "btn btn--on-dark btn--sm" %>
+        <% if site_setting.map_link_url.present? %>
+          <p style="margin-top: var(--space-3)">
+            <%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url, rel: "noopener", target: "_blank" %>
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="shell">
+    <div class="site-footer__legal">
+      <span>© <%= Date.current.year %> <%= site_setting.company_name %></span>
+    </div>
+  </div>
+</footer>

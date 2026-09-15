@@ -1,0 +1,25 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <div data-controller="lightbox" data-action="keydown@document->lightbox#keydown">
+    <ul class="gallery" style="--gallery-cols: <%= section.setting(:columns) %>">
+      <% section.images.each_with_index do |image, i| %>
+        <li>
+          <a href="<%= url_for(image.variant(:wide)) %>"
+             data-action="lightbox#open" data-lightbox-index-param="<%= i %>"
+             aria-label="Agrandir la photo <%= i + 1 %>">
+            <%= image_tag image.variant(:thumb), alt: "", loading: "lazy", decoding: "async", width: 480, height: 480 %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+
+    <dialog class="lightbox" data-lightbox-target="dialog">
+      <div class="lightbox__bar">
+        <button type="button" data-action="lightbox#previous">← Précédente</button>
+        <span data-lightbox-target="counter"></span>
+        <button type="button" data-action="lightbox#next">Suivante →</button>
+        <button type="button" data-action="lightbox#close">Fermer ✕</button>
+      </div>
+      <img data-lightbox-target="image" alt="">
+    </dialog>
+  </div>
+<% end %>

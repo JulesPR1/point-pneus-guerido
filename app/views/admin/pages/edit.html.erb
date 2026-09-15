@@ -1,0 +1,9 @@
+<% content_for :title, @page.title %>
+<div class="admin-head">
+  <div><h1>Réglages de « <%= @page.title %> »</h1></div>
+  <div class="admin-head__actions">
+    <%= link_to "Sections", admin_page_path(@page), class: "btn btn--ghost btn--sm" %>
+    <%= link_to "Aperçu ↗", @page.path, class: "btn btn--quiet btn--sm", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+<section class="panel"><%= render "form", page: @page %></section>

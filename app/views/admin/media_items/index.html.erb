@@ -1,0 +1,36 @@
+<% content_for :title, "Médias" %>
+<div class="admin-head">
+  <div>
+    <h1>Médias</h1>
+    <p>Bibliothèque d'images du site. Les visuels utilisés dans les sections sont gérés depuis la section elle-même.</p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "Ajouter des images", new_admin_media_item_path, class: "btn btn--primary btn--sm" %>
+  </div>
+</div>
+
+<section class="panel">
+  <% if @media_items.any? %>
+    <div class="media-grid">
+      <% @media_items.each do |media| %>
+        <figure class="media-card">
+          <%= image_tag media.file.variant(:thumb), alt: media.alt_text.to_s, loading: "lazy" %>
+          <figcaption class="media-card__body">
+            <strong><%= media.display_title %></strong>
+            <span><%= number_to_human_size media.file.byte_size %></span>
+            <span><%= media.alt_text.presence || "Pas de texte alternatif" %></span>
+          </figcaption>
+          <div class="media-card__actions">
+            <%= link_to "Éditer", edit_admin_media_item_path(media), class: "btn btn--ghost btn--sm" %>
+            <%= button_to "Supprimer", admin_media_item_path(media), method: :delete,
+                          class: "btn btn--quiet btn--sm",
+                          form: { data: { turbo_confirm: "Supprimer cette image ?" } } %>
+          </div>
+        </figure>
+      <% end %>
+    </div>
+    <%= render "admin/shared/pagination", pagination: @pagination %>
+  <% else %>
+    <p class="empty">Aucune image dans la bibliothèque.</p>
+  <% end %>
+</section>

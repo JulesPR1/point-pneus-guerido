@@ -1,0 +1,80 @@
+<%= form_with model: section.new_record? ? [ :admin, section.page, section ] : [ :admin, section ],
+              class: "admin-form" do |f| %>
+  <%= render "admin/shared/errors", record: section %>
+  <%= f.hidden_field :kind %>
+
+  <% definition.fields.each do |field| %>
+    <div class="field">
+      <%= f.label field.name, field.label, class: "label" %>
+      <% if field.name == "body" %>
+        <%= f.text_area field.name, class: "textarea", rows: 8 %>
+        <p class="field-note">
+          Une ligne vide sépare deux paragraphes. Une ligne commençant par <code>-&nbsp;</code> devient une puce,
+          par <code>##&nbsp;</code> un sous-titre. <code>**gras**</code> et <code>[lien](https://…)</code> sont acceptés.
+        </p>
+      <% else %>
+        <%= f.text_field field.name, class: "input" %>
+      <% end %>
+      <% if field.hint.present? %><p class="field-note"><%= field.hint %></p><% end %>
+      <% if field.name == "heading" && definition.key == "hero" %>
+        <p class="field-note">Encadrez un mot d'astérisques (<code>*pneus*</code>) pour le faire ressortir en jaune.</p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% definition.settings.each do |setting| %>
+    <div class="field">
+      <%= label_tag "section_settings_#{setting.name}", setting.label, class: "label" %>
+      <% if setting.options.present? %>
+        <%= select_tag "section[settings][#{setting.name}]",
+                       options_for_select(setting_options(setting), section.setting(setting.name)),
+                       id: "section_settings_#{setting.name}", class: "select" %>
+      <% else %>
+        <%= text_field_tag "section[settings][#{setting.name}]", section.setting(setting.name),
+                           id: "section_settings_#{setting.name}", class: "input" %>
+      <% end %>
+      <% if setting.hint.present? %><p class="field-note"><%= setting.hint %></p><% end %>
+    </div>
+  <% end %>
+
+  <% if definition.one_image? %>
+    <div class="field">
+      <%= f.label :image, "Image", class: "label" %>
+      <% if section.image.attached? %>
+        <div class="attachment-preview">
+          <%= image_tag section.image.variant(:thumb), alt: "" %>
+          <label class="checkbox-row" style="margin: 0">
+            <%= f.check_box :remove_image, {}, "1", "0" %>
+            <span>Supprimer cette image</span>
+          </label>
+        </div>
+      <% end %>
+      <%= f.file_field :image, class: "input", accept: "image/jpeg,image/png,image/webp,image/avif" %>
+    </div>
+  <% end %>
+
+  <% if definition.many_images? %>
+    <div class="field">
+      <%= f.label :images, "Photos de la galerie", class: "label" %>
+      <%= f.file_field :images, class: "input", multiple: true,
+                       accept: "image/jpeg,image/png,image/webp,image/avif" %>
+      <p class="field-note">Les nouvelles photos s'ajoutent à celles déjà présentes.</p>
+    </div>
+  <% end %>
+
+  <div class="checkbox-row">
+    <%= f.check_box :active %>
+    <%= f.label :active, "Section visible sur le site" %>
+  </div>
+
+  <div class="form-footer">
+    <%= f.submit section.new_record? ? "Créer la section" : "Enregistrer", class: "btn btn--primary" %>
+    <%= link_to "Retour à la page", admin_page_path(section.page), class: "btn btn--quiet" %>
+    <% unless section.new_record? %>
+      <span class="spacer"></span>
+      <%= button_to "Supprimer la section", admin_section_path(section), method: :delete,
+                    class: "btn btn--danger btn--sm",
+                    form: { data: { turbo_confirm: "Supprimer cette section et ses éléments ?" } } %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,36 @@
+<% content_for :title, @media_item.display_title %>
+<div class="admin-head"><div><h1><%= @media_item.display_title %></h1></div></div>
+
+<section class="panel">
+  <%= form_with model: [ :admin, @media_item ], class: "admin-form" do |f| %>
+    <%= render "admin/shared/errors", record: @media_item %>
+
+    <div class="attachment-preview">
+      <%= image_tag @media_item.file.variant(:card), alt: @media_item.alt_text.to_s, style: "width: 18rem; height: auto" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :title, "Titre", class: "label" %>
+      <%= f.text_field :title, class: "input" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :alt_text, "Texte alternatif", class: "label" %>
+      <%= f.text_field :alt_text, class: "input" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :file, "Remplacer le fichier", class: "label" %>
+      <%= f.file_field :file, class: "input", accept: "image/jpeg,image/png,image/webp,image/gif,image/avif" %>
+    </div>
+
+    <div class="form-footer">
+      <%= f.submit "Enregistrer", class: "btn btn--primary" %>
+      <%= link_to "Retour", admin_media_items_path, class: "btn btn--quiet" %>
+      <span class="spacer"></span>
+      <%= button_to "Supprimer", admin_media_item_path(@media_item), method: :delete,
+                    class: "btn btn--danger btn--sm",
+                    form: { data: { turbo_confirm: "Supprimer cette image ?" } } %>
+    </div>
+  <% end %>
+</section>

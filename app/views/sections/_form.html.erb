@@ -1,0 +1,9 @@
+<% definition = FormDefinition.find(section.setting(:form_type)) %>
+<%= render layout: "sections/frame", locals: { section: section, index: index, tone: "paper" } do %>
+  <% if definition.nil? %>
+    <p>Formulaire indisponible.</p>
+  <% else %>
+    <%= render "shared/public_form", definition: definition,
+               intro: section.body.presence || definition.intro %>
+  <% end %>
+<% end %>

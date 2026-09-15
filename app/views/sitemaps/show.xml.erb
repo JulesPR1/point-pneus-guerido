@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <% @pages.each do |page| %>
+    <url>
+      <loc><%= URI.join(root_url, page.path) %></loc>
+      <lastmod><%= page.updated_at.iso8601 %></lastmod>
+      <priority><%= page.home? ? "1.0" : "0.7" %></priority>
+    </url>
+  <% end %>
+</urlset>

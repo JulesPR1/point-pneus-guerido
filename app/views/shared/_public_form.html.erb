@@ -1,0 +1,57 @@
+<%#
+  One partial renders all three public forms: the markup is derived from the
+  FormDefinition, which is also what validates the submission server-side.
+%>
+<% errors = (@submission && @submission.form_type == definition.key) ? @submission.errors.full_messages : [] %>
+<% values = (@submitted_values if @submission&.form_type == definition.key) || {} %>
+
+<div id="demande">
+  <% if intro.present? %>
+    <div class="section__lede" style="margin-bottom: var(--space-6)"><%= cms_text(intro, class_name: "") %></div>
+  <% end %>
+
+  <%= form_with url: form_submissions_path, method: :post, class: "form-card" do |f| %>
+    <%= hidden_field_tag :form_type, definition.key %>
+    <%= hidden_field_tag :return_slug, @page&.slug %>
+
+    <div class="honeypot" aria-hidden="true">
+      <label for="website-<%= definition.key %>">Ne pas remplir</label>
+      <input type="text" id="website-<%= definition.key %>" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <% if errors.any? %>
+      <div class="error-summary" role="alert" tabindex="-1">
+        <h2>Votre demande n'a pas pu être envoyée</h2>
+        <ul>
+          <% errors.each do |message| %><li><%= message %></li><% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <p class="form-required-note"><span class="label__required">*</span> Champs obligatoires.</p>
+
+    <% definition.groups.each_with_index do |group, i| %>
+      <fieldset class="fieldset">
+        <% if group.title.present? %>
+          <legend class="fieldset__legend">
+            <span><%= format("%02d", i + 1) %></span><%= group.title %>
+          </legend>
+        <% end %>
+        <% if group.description.present? %>
+          <p class="fieldset__desc"><%= group.description %></p>
+        <% end %>
+
+        <div class="form-grid <%= "form-grid--dimensions" if group.fields.all? { |fl| fl.width == :fifth } %>">
+          <% group.fields.each do |field| %>
+            <%= render "shared/form_field", field: field, value: values[field.key], form_key: definition.key %>
+          <% end %>
+        </div>
+      </fieldset>
+    <% end %>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary btn--lg"><%= definition.submit_label %></button>
+      <p class="form-required-note">Réponse sous 48 h ouvrées. Aucune donnée n'est transmise à un tiers.</p>
+    </div>
+  <% end %>
+</div>

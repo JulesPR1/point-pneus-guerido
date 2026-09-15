@@ -1,0 +1,11 @@
+<div class="shell page-error">
+  <p class="page-error__code">404</p>
+  <h1>Cette page n'existe pas</h1>
+  <p>Le lien est peut-être ancien, ou la page a été renommée.</p>
+  <p>
+    <%= link_to "Retour à l'accueil", root_path, class: "btn btn--primary" %>
+    <% if site_setting.phone.present? %>
+      <%= link_to "Appeler le #{site_setting.phone}", site_setting.phone_link, class: "btn btn--ghost" %>
+    <% end %>
+  </p>
+</div>

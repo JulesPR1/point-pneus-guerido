@@ -1,0 +1,29 @@
+<%# The map is a third-party iframe. Two behaviours, one switch in the site
+    settings (« Afficher la carte directement ») :
+
+    - on  : the iframe is in the HTML, the plan is simply there. Fine for
+            OpenStreetMap, which sets no cookie and profiles nobody.
+    - off : the iframe is inserted on click (map_controller.js), so a visitor
+            who never asks for the plan makes no request to the provider —
+            the behaviour to keep with a Google Maps embed, which does set
+            cookies and therefore needs consent.
+
+    Shared by the "map" section and the footer. %>
+<% compact      = local_assigns.fetch(:compact, false) %>
+<% button_class = local_assigns.fetch(:button_class, "btn btn--ghost") %>
+<div class="map-frame<%= " map-frame--compact" if compact %>"
+     <%= tag.attributes(data: { controller: "map", map_src_value: site_setting.map_embed_url }) unless site_setting.map_autoload? %>>
+  <% if site_setting.map_autoload? %>
+    <iframe src="<%= site_setting.map_embed_url %>" title="Plan d'accès au garage" loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <% else %>
+    <div class="map-placeholder" data-map-target="placeholder">
+      <p>La carte est chargée depuis <%= map_provider_name %> uniquement si vous l'affichez.</p>
+      <%= tag.button "Afficher le plan d'accès", type: "button",
+                     class: button_class, data: { action: "map#load" } %>
+      <% if !compact && site_setting.map_link_url.present? %>
+        <%= link_to "Ou ouvrir l'itinéraire", site_setting.map_link_url, rel: "noopener", target: "_blank" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,15 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <ul class="quotes">
+    <% section.items.each do |item| %>
+      <li>
+        <blockquote class="quote">
+          <p><%= item.body %></p>
+          <footer>
+            <cite><%= item.title %></cite>
+            <% if item.subtitle.present? %><span class="quote__context"><%= item.subtitle %></span><% end %>
+          </footer>
+        </blockquote>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

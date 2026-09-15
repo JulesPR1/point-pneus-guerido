@@ -1,0 +1,20 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <div class="split <%= "split--flip" if section.setting(:image_side) == "left" %>">
+    <div>
+      <%= cms_text section.body %>
+      <% if section.items.any? %>
+        <ul class="split__points">
+          <% section.items.each do |item| %>
+            <li><%= item.title %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+    <% if section.image.attached? %>
+      <figure class="split__figure">
+        <%= cms_image_tag section.image, variant: :card,
+                          alt: section.heading.to_s, sizes: "(min-width: 52rem) 46vw, 100vw" %>
+      </figure>
+    <% end %>
+  </div>
+<% end %>

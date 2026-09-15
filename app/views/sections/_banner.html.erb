@@ -1,0 +1,17 @@
+<% tone = section.setting(:tone) %>
+<div class="banner <%= "banner--#{tone}" unless tone == "signal" %>" id="section-<%= section.id %>">
+  <div class="shell banner__inner">
+    <div>
+      <p class="banner__text"><%= section.heading %></p>
+      <% if section.body.present? %><p class="banner__note"><%= section.body %></p><% end %>
+    </div>
+    <% if section.items.any? %>
+      <div class="cta__actions">
+        <% section.items.each do |item| %>
+          <%= link_to item.title, item.link_url.presence || "#",
+                      class: "btn btn--sm #{tone == 'dark' ? 'btn--on-dark' : 'btn--ghost'}" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

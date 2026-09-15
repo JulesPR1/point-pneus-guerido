@@ -1,0 +1,11 @@
+<% if pagination.many? %>
+  <nav class="pagination" aria-label="Pagination">
+    <% unless pagination.first? %>
+      <%= link_to "← Précédent", url_for(request.query_parameters.merge(page: pagination.previous_page)), class: "btn btn--ghost btn--sm" %>
+    <% end %>
+    <span>Page <%= pagination.page %> sur <%= pagination.total_pages %> — <%= pagination.total_count %> résultats</span>
+    <% unless pagination.last? %>
+      <%= link_to "Suivant →", url_for(request.query_parameters.merge(page: pagination.next_page)), class: "btn btn--ghost btn--sm" %>
+    <% end %>
+  </nav>
+<% end %>

@@ -1,0 +1,65 @@
+<% content_for :title, "Demande ##{@submission.id}" %>
+<div class="admin-head">
+  <div>
+    <h1><%= @submission.type_label %> — n° <%= @submission.id %></h1>
+    <p>Reçue le <%= l @submission.created_at, format: :long_fr %></p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "← Toutes les demandes", admin_form_submissions_path, class: "btn btn--quiet btn--sm" %>
+  </div>
+</div>
+
+<div class="submission-grid">
+  <section class="panel">
+    <h2>Contenu de la demande</h2>
+    <dl class="payload">
+      <% @submission.labelled_payload.each do |label, value| %>
+        <div>
+          <dt><%= label %></dt>
+          <dd><%= escaped_multiline value %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </section>
+
+  <div class="stack">
+    <section class="panel">
+      <h2>Suivi</h2>
+      <%= form_with model: [ :admin, @submission ], class: "admin-form" do |f| %>
+        <%= render "admin/shared/errors", record: @submission %>
+
+        <div class="field">
+          <%= f.label :status, "Statut", class: "label" %>
+          <%= f.select :status, FormSubmission.status_options, {}, class: "select" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :admin_notes, "Notes internes", class: "label" %>
+          <%= f.text_area :admin_notes, class: "textarea", rows: 6 %>
+          <p class="field-note">Visibles uniquement dans le backoffice.</p>
+        </div>
+
+        <div class="form-footer">
+          <%= f.submit "Enregistrer", class: "btn btn--primary" %>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="panel">
+      <h2>Contacter</h2>
+      <ul style="display: grid; gap: var(--space-3); font-size: var(--step--1)">
+        <% if @submission.contact_phone.present? %>
+          <li><a href="tel:<%= @submission.contact_phone.gsub(/\s/, '') %>"><%= @submission.contact_phone %></a></li>
+        <% end %>
+        <% if @submission.contact_email.present? %>
+          <li><a href="mailto:<%= @submission.contact_email %>"><%= @submission.contact_email %></a></li>
+        <% end %>
+      </ul>
+      <div class="form-footer">
+        <%= button_to "Supprimer la demande", admin_form_submission_path(@submission), method: :delete,
+                      class: "btn btn--danger btn--sm",
+                      form: { data: { turbo_confirm: "Supprimer définitivement cette demande ?" } } %>
+      </div>
+    </section>
+  </div>
+</div>

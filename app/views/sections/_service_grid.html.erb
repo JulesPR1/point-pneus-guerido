@@ -1,0 +1,14 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <ul class="grid grid--<%= section.setting(:columns) %>">
+    <% section.items.each do |item| %>
+      <li class="tile">
+        <span class="tile__icon"><%= cms_icon(item) %></span>
+        <%= content_tag sub_heading_tag, item.title %>
+        <% if item.body.present? %><p><%= item.body %></p><% end %>
+        <% if item.link_url.present? %>
+          <%= link_to item.link_label.presence || "En savoir plus", item.link_url, class: "tile__link" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

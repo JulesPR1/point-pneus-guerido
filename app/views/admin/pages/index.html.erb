@@ -1,0 +1,48 @@
+<% content_for :title, "Pages" %>
+<div class="admin-head">
+  <div>
+    <h1>Pages</h1>
+    <p>Chaque page est composée de sections réordonnables.</p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "Nouvelle page", new_admin_page_path, class: "btn btn--primary btn--sm" %>
+  </div>
+</div>
+
+<section class="panel panel--flush">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Titre</th><th>Adresse</th><th>Sections</th><th>Menu</th><th>Statut</th><th class="right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @pages.each do |page| %>
+          <tr>
+            <td>
+              <%= link_to page.title, admin_page_path(page) %>
+              <% if page.home? %><span class="badge">Accueil</span><% end %>
+              <% if page.parent %><br><span style="color: var(--steel-500)">sous « <%= page.parent.nav_title %> »</span><% end %>
+            </td>
+            <td><code><%= page.path %></code></td>
+            <td><%= page.sections_count %></td>
+            <td><%= page.show_in_nav? ? "Oui" : "Non" %></td>
+            <td><span class="badge badge--<%= page.status %>"><%= page.published? ? "Publiée" : "Brouillon" %></span></td>
+            <td>
+              <div class="cell-actions">
+                <%= link_to "Éditer", edit_admin_page_path(page), class: "btn btn--quiet btn--sm" %>
+                <% if page.published? && !page.home? %>
+                  <%= button_to "Dépublier", unpublish_admin_page_path(page), method: :patch, class: "btn btn--quiet btn--sm" %>
+                <% elsif page.draft? %>
+                  <%= button_to "Publier", publish_admin_page_path(page), method: :patch, class: "btn btn--quiet btn--sm" %>
+                <% end %>
+                <%= link_to "Aperçu ↗", page.path, class: "btn btn--quiet btn--sm", target: "_blank", rel: "noopener" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

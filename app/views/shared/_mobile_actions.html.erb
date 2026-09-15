@@ -1,0 +1,6 @@
+<div class="mobile-actions">
+  <% if site_setting.phone.present? %>
+    <a href="<%= site_setting.phone_link %>">Appeler</a>
+  <% end %>
+  <%= link_to "Devis gratuit", quote_page_path %>
+</div>

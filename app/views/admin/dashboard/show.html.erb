@@ -1,0 +1,83 @@
+<% content_for :title, "Tableau de bord" %>
+<div class="admin-head">
+  <div>
+    <h1>Tableau de bord</h1>
+    <p>Vue d'ensemble du contenu et des demandes reçues.</p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "Nouvelle page", new_admin_page_path, class: "btn btn--primary btn--sm" %>
+    <%= link_to "Voir le site ↗", root_path, class: "btn btn--ghost btn--sm", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card"><b><%= @pages_count %></b><span>Pages</span></div>
+  <div class="stat-card"><b><%= @published_count %></b><span>Pages publiées</span></div>
+  <div class="stat-card"><b><%= @sections_count %></b><span>Sections</span></div>
+  <div class="stat-card"><b><%= @media_count %></b><span>Médias</span></div>
+  <div class="stat-card"><b><%= @submissions_count %></b><span>Demandes reçues</span></div>
+  <%# Highlighted only when something is actually waiting. %>
+  <div class="stat-card <%= "stat-card--signal" if @open_count.positive? %>">
+    <b><%= @open_count %></b><span>Demandes à traiter</span>
+  </div>
+</div>
+
+<div class="submission-grid">
+  <section class="panel panel--flush">
+    <div class="panel__head">
+      <h2>Dernières demandes</h2>
+      <%= link_to "Toutes les demandes", admin_form_submissions_path %>
+    </div>
+    <% if @latest.any? %>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Reçue le</th><th>Type</th><th>Contact</th><th>Statut</th><th class="right">Action</th></tr>
+          </thead>
+          <tbody>
+            <% @latest.each do |submission| %>
+              <tr>
+                <td><%= l submission.created_at, format: :short_fr %></td>
+                <td><%= submission.type_label %></td>
+                <td><%= submission.contact_name.presence || submission.contact_email %></td>
+                <td><span class="badge badge--<%= submission.status %>"><%= submission.status_label %></span></td>
+                <td class="right"><%= link_to "Ouvrir", admin_form_submission_path(submission) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="empty">Aucune demande reçue pour le moment.</p>
+    <% end %>
+  </section>
+
+  <div class="stack">
+    <section class="panel">
+      <h2>Demandes par formulaire</h2>
+      <table class="table">
+        <tbody>
+          <% FormDefinition::ALL.each do |definition| %>
+            <tr>
+              <th scope="row"><%= definition.label %></th>
+              <td class="right"><%= @by_type[definition.key].to_i %></td>
+            </tr>
+          <% end %>
+          <tr><th scope="row">Sur les 7 derniers jours</th><td class="right"><%= @week_count %></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Pages récemment modifiées</h2>
+      <ul class="link-list">
+        <% @recently_edited.each do |page| %>
+          <li>
+            <%= link_to page.title, admin_page_path(page) %>
+            <span class="badge badge--<%= page.status %>"><%= page.published? ? "Publiée" : "Brouillon" %></span>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <div class="price-list">
+    <% section.items.each do |item| %>
+      <div class="price-row">
+        <p class="price-row__label"><%= item.title %></p>
+        <p class="price-row__value"><%= item.value %></p>
+        <% if item.body.present? %><p class="price-row__note"><%= item.body %></p><% end %>
+      </div>
+    <% end %>
+  </div>
+  <% if section.body.present? %>
+    <div class="price-note"><%= cms_text(section.body, class_name: "") %></div>
+  <% end %>
+<% end %>

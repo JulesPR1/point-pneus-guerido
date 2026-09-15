@@ -1,0 +1,46 @@
+<%# Icon picker: the whole library (see Icon) laid out by family, with a search
+    box. The real value travels in a hidden field, so the form stays a plain
+    form and works the same whether or not Stimulus has booted. %>
+<div class="field" data-controller="icon-picker">
+  <span class="label">Icône</span>
+  <%= f.hidden_field :icon, data: { icon_picker_target: "input" } %>
+
+  <div class="icon-picker">
+    <div class="icon-picker__bar">
+      <span class="icon-picker__preview" data-icon-picker-target="preview">
+        <%= icon_tag f.object.icon.presence || Icon.guess(f.object.title) %>
+      </span>
+      <span class="icon-picker__name" data-icon-picker-target="name">
+        <%= f.object.icon.present? ? Icon.label(f.object.icon) : "Déduite du titre" %>
+      </span>
+      <input type="search" class="input icon-picker__search" placeholder="Rechercher : pneu, garantie, horaires…"
+             autocomplete="off" aria-label="Rechercher une icône"
+             data-icon-picker-target="search" data-action="input->icon-picker#filter">
+      <%= button_tag "Effacer", type: "button", class: "btn btn--quiet btn--sm",
+                     data: { action: "icon-picker#clear" } %>
+    </div>
+
+    <div class="icon-picker__scroll">
+      <% Icon::GROUPS.each do |group, icons| %>
+        <section class="icon-picker__family" data-icon-picker-target="family">
+          <h4 class="icon-picker__group"><%= group %></h4>
+          <div class="icon-picker__grid">
+            <% icons.each do |name, label| %>
+              <button type="button" class="icon-option<%= " is-selected" if f.object.icon == name %>"
+                      data-icon-picker-target="option" data-name="<%= name %>"
+                      data-terms="<%= "#{label} #{name} #{group}" %>"
+                      data-action="icon-picker#choose"
+                      aria-pressed="<%= f.object.icon == name %>" title="<%= label %>">
+                <%= icon_tag name %>
+                <span><%= label %></span>
+              </button>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+      <p class="icon-picker__empty" data-icon-picker-target="empty" hidden>Aucune icône ne correspond.</p>
+    </div>
+  </div>
+
+  <p class="field-note">Laissez vide pour que l'icône soit déduite du titre du service.</p>
+</div>

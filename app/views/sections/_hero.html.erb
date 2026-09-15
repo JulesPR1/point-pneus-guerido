@@ -1,0 +1,49 @@
+<% heading_tag = section.id == @h1_section_id ? :h1 : :h2 %>
+<section class="hero" id="section-<%= section.id %>">
+  <div class="shell hero__grid <%= "hero__grid--plain" unless section.image.attached? %>">
+    <div>
+      <% if section.eyebrow.present? %>
+        <p class="eyebrow"><%= section.eyebrow %></p>
+      <% end %>
+      <%= content_tag heading_tag, class: "hero__title" do %>
+        <%= hero_headline(section.heading) %>
+      <% end %>
+      <% if section.subheading.present? %>
+        <p class="hero__sub"><%= section.subheading %></p>
+      <% end %>
+      <% if section.body.present? %>
+        <div class="hero__body"><%= cms_text(section.body, class_name: "") %></div>
+      <% end %>
+
+      <% if section.items.any? %>
+        <div class="hero__actions">
+          <% section.items.each do |item| %>
+            <%= link_to item.title, item.link_url.presence || "#",
+                        class: "btn btn--lg #{item.value == 'secondaire' ? 'btn--on-dark' : 'btn--primary'}" %>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="hero__meta">
+        <% if site_setting.full_address.present? %>
+          <span><b>L'atelier</b><%= site_setting.full_address %></span>
+        <% end %>
+        <% if site_setting.phone.present? %>
+          <span><b>Téléphone</b><a href="<%= site_setting.phone_link %>"><%= site_setting.phone %></a></span>
+        <% end %>
+        <% first_slot = site_setting.hours.first %>
+        <% if first_slot %>
+          <span><b><%= first_slot.first %></b><%= first_slot.last %></span>
+        <% end %>
+      </div>
+    </div>
+
+    <% if section.image.attached? %>
+      <figure class="hero__figure">
+        <%= cms_image_tag section.image, variant: :wide, eager: true,
+                          alt: section.subheading.presence || section.heading.to_s,
+                          sizes: "(min-width: 64rem) 46vw, 100vw" %>
+      </figure>
+    <% end %>
+  </div>
+</section>

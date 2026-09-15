@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>Connexion — Administration</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="<%= asset_path 'favicon.svg' %>" type="image/svg+xml">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "admin" %>
+  </head>
+  <body>
+    <main class="auth-page">
+      <div class="auth-card">
+        <% flash.each do |type, message| %>
+          <p class="<%= flash_class(type) %>" role="alert" style="margin-bottom: var(--space-5)"><%= message %></p>
+        <% end %>
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>

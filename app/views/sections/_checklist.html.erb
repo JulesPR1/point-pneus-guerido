@@ -1,0 +1,13 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <ul class="checklist">
+    <% section.items.each do |item| %>
+      <li>
+        <span class="checklist__mark" aria-hidden="true">✓</span>
+        <span>
+          <b><%= item.title %></b>
+          <% if item.body.present? %><p><%= item.body %></p><% end %>
+        </span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

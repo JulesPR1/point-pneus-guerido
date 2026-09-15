@@ -1,0 +1,20 @@
+<%# Flash messages as toasts: a card that slides in over the page, waits, and
+    leaves on its own. Nothing below it moves, so a form result no longer pushes
+    the page down while the visitor is reading it. %>
+<% if flash.any? %>
+  <div class="toaster" data-controller="toast" aria-live="polite" aria-atomic="false">
+    <% flash.each do |type, message| %>
+      <% alert = type.to_s == "alert" %>
+      <%= tag.div class: "toast toast--#{alert ? 'alert' : 'notice'}",
+                  role: (alert ? "alert" : nil),
+                  data: { toast_target: "item" } do %>
+        <span class="toast__icon"><%= icon_tag(alert ? "triangle-alert" : "circle-check-big") %></span>
+        <p class="toast__text"><%= message %></p>
+        <button type="button" class="toast__close" aria-label="Fermer la notification"
+                data-action="toast#dismiss">
+          <%= icon_tag "x" %>
+        </button>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

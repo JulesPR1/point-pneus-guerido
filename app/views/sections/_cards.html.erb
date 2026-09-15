@@ -1,0 +1,20 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <ul class="grid grid--<%= section.setting(:columns) %>">
+    <% section.items.each do |item| %>
+      <li class="card">
+        <% if item.image.attached? %>
+          <%= cms_image_tag item.image, variant: :card, alt: item.title.to_s,
+                            sizes: "(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 100vw" %>
+        <% end %>
+        <div class="card__body">
+          <%= content_tag sub_heading_tag, item.title %>
+          <% if item.subtitle.present? %><p class="card__sub"><%= item.subtitle %></p><% end %>
+          <% if item.body.present? %><p><%= item.body %></p><% end %>
+          <% if item.link_url.present? %>
+            <%= link_to item.link_label.presence || "Découvrir", item.link_url, class: "tile__link" %>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

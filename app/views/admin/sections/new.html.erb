@@ -1,0 +1,8 @@
+<% content_for :title, "Nouvelle section" %>
+<div class="admin-head">
+  <div>
+    <h1>Ajouter : <%= @definition.label %></h1>
+    <p><%= @definition.description %> — page « <%= @page.title %> »</p>
+  </div>
+</div>
+<section class="panel"><%= render "form", section: @section, definition: @definition %></section>

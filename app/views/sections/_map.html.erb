@@ -1,0 +1,7 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <% if site_setting.map_embed_url.present? %>
+    <%= render "shared/map_embed" %>
+  <% elsif site_setting.map_link_url.present? %>
+    <%= link_to "Ouvrir l'itinéraire", site_setting.map_link_url, class: "btn btn--ghost", rel: "noopener", target: "_blank" %>
+  <% end %>
+<% end %>

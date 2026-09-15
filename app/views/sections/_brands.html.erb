@@ -1,0 +1,14 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <%= cms_text section.body %>
+  <ul class="brands">
+    <% section.items.each do |item| %>
+      <%= tag.li class: ("brands__logo" if item.image.attached?) do %>
+        <% if item.image.attached? %>
+          <%= cms_image_tag item.image, variant: :thumb, alt: item.title.to_s %>
+        <% else %>
+          <%= item.title %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

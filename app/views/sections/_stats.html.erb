@@ -1,0 +1,11 @@
+<%= render layout: "sections/frame", locals: { section: section, index: index } do %>
+  <ul class="stats">
+    <% section.items.each do |item| %>
+      <li class="stat">
+        <p class="stat__value"><%= item.value %></p>
+        <p class="stat__label"><%= item.title %></p>
+        <% if item.body.present? %><p class="stat__note"><%= item.body %></p><% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

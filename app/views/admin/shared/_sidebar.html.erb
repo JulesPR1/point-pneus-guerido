@@ -1,0 +1,55 @@
+<aside class="admin-side">
+  <a class="admin-side__brand" href="<%= admin_root_path %>">
+    <span aria-hidden="true">PG</span> Backoffice
+  </a>
+
+  <nav aria-label="Navigation du backoffice">
+    <p class="admin-side__label">Contenu</p>
+    <ul>
+      <li>
+        <a href="<%= admin_root_path %>" <%= tag.attributes(:"aria-current" => "page") if current_page?(admin_root_path) %>>
+          <%= icon_tag "layout-grid" %> Tableau de bord
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_pages_path %>" <%= tag.attributes(:"aria-current" => "page") if controller_name.in?(%w[pages sections section_items]) %>>
+          <%= icon_tag "file-text" %> Pages
+        </a>
+      </li>
+      <li>
+        <a href="<%= admin_media_items_path %>" <%= tag.attributes(:"aria-current" => "page") if controller_name == "media_items" %>>
+          <%= icon_tag "image" %> Médias
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <nav aria-label="Demandes et réglages">
+    <p class="admin-side__label">Atelier</p>
+    <ul>
+      <li>
+        <a href="<%= admin_form_submissions_path %>" <%= tag.attributes(:"aria-current" => "page") if controller_name == "form_submissions" %>>
+          <%= icon_tag "inbox" %> Demandes
+          <% open_count = FormSubmission.open_requests.count %>
+          <% if open_count.positive? %>
+            <b><span class="visually-hidden">à traiter : </span><%= open_count %></b>
+          <% end %>
+        </a>
+      </li>
+      <li>
+        <a href="<%= edit_admin_site_setting_path %>" <%= tag.attributes(:"aria-current" => "page") if controller_name == "site_settings" %>>
+          <%= icon_tag "settings" %> Réglages du site
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="admin-side__foot">
+    <a href="<%= root_path %>" target="_blank" rel="noopener"><%= icon_tag "external-link" %> Voir le site</a>
+    <div class="admin-side__user">
+      <b><%= current_admin_user&.display_name %></b>
+      <span><%= current_admin_user&.email_address %></span>
+    </div>
+    <%= button_to "Se déconnecter", admin_session_path, method: :delete, class: "btn btn--on-dark btn--sm btn--block" %>
+  </div>
+</aside>

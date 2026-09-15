@@ -1,0 +1,18 @@
+<h1>Administration</h1>
+<p class="sub">Espace réservé à la gestion du contenu du site.</p>
+
+<%= form_with url: admin_session_path, method: :post do %>
+  <div class="field">
+    <label class="label" for="email_address">Adresse e-mail</label>
+    <%= email_field_tag :email_address, nil, id: "email_address", class: "input",
+                        required: true, autofocus: true, autocomplete: "username" %>
+  </div>
+
+  <div class="field">
+    <label class="label" for="password">Mot de passe</label>
+    <%= password_field_tag :password, nil, id: "password", class: "input",
+                           required: true, autocomplete: "current-password" %>
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--block btn--lg">Se connecter</button>
+<% end %>

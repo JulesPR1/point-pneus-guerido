@@ -1,0 +1,85 @@
+<% content_for :title, @section.admin_title %>
+<div class="admin-head">
+  <div>
+    <h1><%= @section.admin_title %></h1>
+    <p><%= @definition.label %> — page « <%= link_to @section.page.title, admin_page_path(@section.page) %> »</p>
+  </div>
+  <div class="admin-head__actions">
+    <%= link_to "Aperçu ↗", "#{@section.page.path}#section-#{@section.id}",
+                class: "btn btn--quiet btn--sm", target: "_blank", rel: "noopener" %>
+  </div>
+</div>
+
+<section class="panel"><%= render "form", section: @section, definition: @definition %></section>
+
+<% if @definition.items? %>
+  <section class="panel">
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap: var(--space-4); margin-bottom: var(--space-5)">
+      <h2 style="margin:0"><%= @definition.item.plural %></h2>
+      <%= link_to "Ajouter #{@definition.item.label.downcase}", new_admin_section_section_item_path(@section),
+                  class: "btn btn--primary btn--sm" %>
+    </div>
+
+    <% if @section.items.any? %>
+      <ol class="section-list"
+          data-controller="sortable"
+          data-sortable-url-value="<%= reorder_admin_section_section_items_path(@section) %>">
+        <% @section.items.each do |item| %>
+          <li class="section-row" draggable="true" data-sortable-target="item" data-id="<%= item.id %>">
+            <span class="section-row__grip" aria-hidden="true">⠿</span>
+            <div>
+              <div class="section-row__meta">
+                <% if @definition.item.icon %>
+                  <span class="section-row__icon" aria-hidden="true"><%= cms_icon(item) %></span>
+                <% end %>
+                <strong><%= item.title.presence || item.value.presence || item.body.to_s.truncate(60).presence || "Sans titre" %></strong>
+                <% if item.value.present? && item.title.present? %><span class="section-row__kind"><%= item.value %></span><% end %>
+              </div>
+              <% if item.body.present? && item.title.present? %>
+                <p class="section-row__pos"><%= item.body.to_s.truncate(90) %></p>
+              <% end %>
+            </div>
+            <div class="section-row__actions">
+              <%= button_to "↑", move_up_admin_section_item_path(item), method: :patch,
+                            class: "btn btn--ghost btn--sm", form: { style: "display:inline" },
+                            disabled: item == @section.items.first, "aria-label": "Monter" %>
+              <%= button_to "↓", move_down_admin_section_item_path(item), method: :patch,
+                            class: "btn btn--ghost btn--sm", form: { style: "display:inline" },
+                            disabled: item == @section.items.last, "aria-label": "Descendre" %>
+              <%= link_to "Éditer", edit_admin_section_item_path(item), class: "btn btn--ghost btn--sm" %>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="empty">Aucun <%= @definition.item.label.downcase %> pour l'instant.</p>
+    <% end %>
+  </section>
+<% end %>
+
+<% if @definition.many_images? && @section.images.attached? %>
+  <section class="panel">
+    <h2>Photos de la galerie (<%= @section.images.size %>)</h2>
+    <%= form_with url: admin_section_path(@section), method: :patch do %>
+      <%# keeps a `section` key in the params so the shared strong-params call still applies %>
+      <%= hidden_field_tag "section[kind]", @section.kind %>
+      <div class="media-grid">
+        <% @section.images.each do |image| %>
+          <div class="media-card">
+            <%= image_tag image.variant(:thumb), alt: "" %>
+            <div class="media-card__body">
+              <label class="checkbox-row" style="margin:0">
+                <%= check_box_tag "remove_image_ids[]", image.signed_id, false %>
+                <span>Supprimer</span>
+              </label>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="form-footer">
+        <%= submit_tag "Supprimer les photos cochées", class: "btn btn--danger btn--sm",
+                       data: { turbo_confirm: "Supprimer définitivement les photos sélectionnées ?" } %>
+      </div>
+    <% end %>
+  </section>
+<% end %>

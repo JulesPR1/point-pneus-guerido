@@ -1,0 +1,63 @@
+<%#
+  Google reviews. The score, the review count and the link come from the
+  section's settings; each quote is a section item recopied from the Google
+  listing by hand. Nothing is fetched at request time.
+%>
+<% rating       = section.setting(:rating) %>
+<% score_label  = review_score_label(rating) %>
+<% count_label  = review_count_label(section.setting(:reviews_count)) %>
+<% profile_url  = section.setting(:profile_url) %>
+<% has_summary  = score_label.present? || count_label.present? || profile_url.present? %>
+<%# Every review stays in the CMS; only the first few are shown. %>
+<% visible      = section.setting(:visible) %>
+<% reviews      = visible == "all" ? section.items : section.items.first(visible.to_i) %>
+
+<%= render layout: "sections/frame", locals: { section: section, index: index, lede: section.body } do %>
+  <% if has_summary %>
+    <div class="reviews-summary">
+      <%= google_logo_tag %>
+      <div class="reviews-summary__score">
+        <p class="reviews-summary__label">Avis Google</p>
+        <% if score_label.present? %>
+          <p class="reviews-summary__value"><%= score_label %><span>/5</span></p>
+        <% end %>
+      </div>
+      <div class="reviews-summary__detail">
+        <%= stars_tag rating, class_name: "stars--lg" %>
+        <% if count_label.present? %>
+          <p class="reviews-summary__count"><%= count_label %> avis déposés sur Google</p>
+        <% end %>
+      </div>
+      <% if profile_url.present? %>
+        <%= link_to "Lire tous les avis", profile_url, class: "btn btn--ghost btn--sm reviews-summary__link",
+                    target: "_blank", rel: "noopener nofollow" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if reviews.any? %>
+    <ul class="reviews reviews--<%= section.setting(:columns) %>">
+      <% reviews.each do |item| %>
+        <li class="review">
+          <div class="review__head">
+            <span class="review__avatar" aria-hidden="true"><%= review_initial(item.title) %></span>
+            <div>
+              <p class="review__author"><%= item.title.presence || "Client Point Pneus Guerido" %></p>
+              <% if item.subtitle.present? %>
+                <p class="review__date"><%= item.subtitle %></p>
+              <% end %>
+            </div>
+          </div>
+          <%= stars_tag item.value %>
+          <% if item.body.present? %>
+            <blockquote class="review__body"><p><%= item.body %></p></blockquote>
+          <% end %>
+          <% if item.link_url.present? %>
+            <%= link_to "Voir l'avis sur Google", item.link_url, class: "review__link",
+                        target: "_blank", rel: "noopener nofollow" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
