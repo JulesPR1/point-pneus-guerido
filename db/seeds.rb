@@ -210,10 +210,21 @@ build_page(
     [ :brands, {
       heading: "Les marques que nous montons",
       body: "Pneus de tourisme, 4x4, camionnette et neige, jantes et accessoires. La disponibilité varie selon la dimension : demandez-nous la vôtre.",
-      items: [
-        "Michelin", "Goodyear", "Pirelli", "Hankook", "Kleber", "BFGoodrich",
-        "Firestone", "Falken", "Nexen", "Cheyen", "Valeo"
-      ].map { |name| { title: name } }
+      # Logos repris du bandeau de marques du site source (11 fichiers
+      # marque-1..11.png), renommés d'après la marque qu'ils représentent.
+      items: {
+        "Michelin"   => "michelin.png",
+        "Goodyear"   => "goodyear.png",
+        "Pirelli"    => "pirelli.png",
+        "Hankook"    => "hankook.png",
+        "Kleber"     => "kleber.png",
+        "BFGoodrich" => "bfgoodrich.png",
+        "Firestone"  => "firestone.png",
+        "Falken"     => "falken.png",
+        "Nexen"      => "nexen.png",
+        "Cheyen"     => "cheyen.png",
+        "Valeo"      => "valeo.png"
+      }.map { |name, file| { title: name, image: "marques/#{file}" } }
     } ],
 
     [ :cards, {
