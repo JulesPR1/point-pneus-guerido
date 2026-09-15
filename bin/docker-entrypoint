@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+# Prépare la base avant de démarrer Puma (voir docs/DEPLOIEMENT-DEMO.md).
+if [ "${1}" == "./bin/rails" ] || [ "${1}" == "bin/rails" ]; then
+  ./bin/rails db:prepare
+
+  # Démo : reconstruit tout le contenu à chaque démarrage.
+  # ATTENTION : db:seed commence par un destroy_all — toute saisie faite
+  # dans /admin est perdue. Mettre SEED_ON_BOOT=0 pour la conserver.
+  if [ "${SEED_ON_BOOT}" == "1" ]; then
+    ./bin/rails db:seed
+  fi
+fi
+
+exec "${@}"

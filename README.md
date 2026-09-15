@@ -17,6 +17,8 @@ en dur dans les vues.
 | [`docs/AUDIT.md`](docs/AUDIT.md) | Audit du site existant : arborescence, contenus, formulaires, médias, décisions de reprise |
 | [`docs/DESIGN.md`](docs/DESIGN.md) | Direction artistique et design system |
 | [`docs/CMS.md`](docs/CMS.md) | Fonctionnement du CMS : modèle de données, types de sections, formulaires |
+| [`docs/CORRECTIONS.md`](docs/CORRECTIONS.md) | Passe de correction éditoriale : affirmations retirées, conditionnées, et points à trancher avec le garage |
+| [`docs/DEPLOIEMENT-DEMO.md`](docs/DEPLOIEMENT-DEMO.md) | Manuel de mise en ligne de la démo gratuite sur Render (Docker, SQLite, blueprint) |
 
 ## Démarrage
 

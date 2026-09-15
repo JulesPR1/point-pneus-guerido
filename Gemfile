@@ -33,6 +33,12 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 gem "ruby-vips", "~> 2.2"
 
+# Base de la démo hébergée sur Render : SQLite dans le conteneur (voir docs/DEPLOIEMENT-DEMO.md).
+# La production reste sur MySQL — cf. DEMO_SQLITE dans config/database.yml.
+group :production do
+  gem "sqlite3", ">= 2.1"
+end
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

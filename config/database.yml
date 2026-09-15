@@ -16,6 +16,17 @@ test:
   <<: *default
   database: point_pneus_guerido_test
 
+# DEMO_SQLITE=1 : base SQLite embarquée dans le conteneur, pour la démo gratuite
+# hébergée sur Render (voir docs/DEPLOIEMENT-DEMO.md). Sans cette variable, la
+# production reste sur MySQL.
+<% if ENV["DEMO_SQLITE"] == "1" %>
+production:
+  adapter: sqlite3
+  database: <%= ENV.fetch("SQLITE_PATH", "storage/production.sqlite3") %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  timeout: 5000
+<% else %>
 production:
   <<: *default
   database: <%= ENV.fetch("DATABASE_NAME", "point_pneus_guerido_production") %>
+<% end %>

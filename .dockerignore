@@ -1,0 +1,24 @@
+.git
+.github
+.claude
+log/*
+!log/.keep
+tmp/*
+!tmp/.keep
+!tmp/pids/.keep
+!tmp/storage/.keep
+storage/*
+!storage/.keep
+public/assets
+test
+node_modules
+
+# Documentation et rapports : inutiles dans l'image
+docs
+specs.md
+rapport-correction.md
+
+# Secrets : le conteneur reçoit SECRET_KEY_BASE par variable d'environnement
+config/master.key
+config/credentials/*.key
+.env*
